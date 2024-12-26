@@ -12,7 +12,8 @@ use crate::widget::Widget;
 pub trait Scene{
     /// Gets the game the scene resides in
     fn get_game(&self) -> Rc<Game>{
-        self.scene_data().game.borrow().clone().and_then(|x| x.upgrade()).expect("For some reason, the game couldnt be gotten")
+        self.scene_data().game.borrow().clone().and_then(|x| x.upgrade())
+            .unwrap()
     }
 
     /// Gets the widgets contained in the scene
@@ -47,7 +48,7 @@ pub fn add_widget<T: Widget + 'static>(scene: Rc<dyn Scene>, widget: T) -> Rc<T>
     created
 }
 pub fn remove_widget(scene:Rc<dyn Scene>, widget: Rc<dyn Widget>) {
-    widget.clone().set_parent(None).expect("parent failed");
+    widget.clone().set_parent(None).unwrap();
     let pos = scene.scene_data().widgets.borrow().iter().position(|x| Rc::ptr_eq(x, &widget)).unwrap();
     scene.scene_data().widgets.borrow_mut().remove(pos);
 

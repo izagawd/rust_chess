@@ -32,13 +32,13 @@ impl ChessSlot{
     pub fn set_piece_at_slot(self: Rc<Self>, piece: Option<Rc<dyn ChessPiece>>){
         let to_clone =self.get_children().clone();
         for i in to_clone{
-            i.clone().set_parent(None).expect("bruh");
+            i.clone().set_parent(None).unwrap();
             remove_widget(self.get_scene(),i);
         }
         piece.map(|x| {
 
 
-            x.clone().set_parent(Some(self.clone())).expect("hmm");
+            x.clone().set_parent(Some(self.clone())).unwrap();
 
             x.set_size(self.size());
             x.set_local_position(WidgetVector{

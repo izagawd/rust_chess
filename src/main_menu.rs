@@ -46,21 +46,22 @@ impl Scene for MainMenu {
         },Vector2::new(500.0,500.0),BLUE));
 
 
+        // creating the play button
         let play_button = add_widget(self.clone(), RectangleWidget::new(WidgetVector {
             alignment: Center,
             offset: Vector2::new(0.0, 0.0),
         },Vector2::new(300.0,60.0),RED));
 
-
+        // creating the play button text
         let play_text = add_widget(self.clone(), TextWidget::new(WidgetVector {
             alignment: Center,
             offset: Vector2::new(0.0, 0.0),
         },50.0,WHITE,String::from("PLAY")));
 
-        play_text.clone().set_parent(Some(play_button.clone())).expect("ugh");
+        play_text.clone().set_parent(Some(play_button.clone())).unwrap();
 
-        self.play_button_widget.set(Rc::downgrade(&play_button));
-        play_button.set_parent(Some(rectangle)).expect("ugh");
+        self.play_button_widget.set(Rc::downgrade(&play_button)).unwrap();
+        play_button.set_parent(Some(rectangle)).unwrap();
 
 
     }

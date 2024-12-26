@@ -54,7 +54,7 @@ impl ChessBoard{
             *i.board.borrow_mut() = Rc::downgrade(&created);
         }
         for i in cloned_vecs_of_chess.iter(){
-            i.clone().set_parent(Some(created.clone())).expect("ugh");
+            i.clone().set_parent(Some(created.clone())).unwrap();
 
         }
 

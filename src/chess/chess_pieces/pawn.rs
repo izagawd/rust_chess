@@ -33,12 +33,12 @@ static BLACK_PAWN_IMAGE: LazyLock<Texture2D> = LazyLock::new(|| {
     futures::executor::block_on(
 
 
-        load_texture("pieces-basic-png/black-pawn.png")).expect("Failed to load texture")
+        load_texture("pieces-basic-png/black-pawn.png")).unwrap()
 
 });
 static WHITE_PAWN_IMAGE: LazyLock<Texture2D> = LazyLock::new(|| {
 
-    futures::executor::block_on(    load_texture("pieces-basic-png/white-pawn.png")).expect("Failed to load texture")
+    futures::executor::block_on(    load_texture("pieces-basic-png/white-pawn.png")).unwrap()
 
 });
 impl Pawn{
