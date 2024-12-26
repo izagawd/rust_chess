@@ -6,6 +6,7 @@ use crate::chess::chess_pieces::chess_piece::ChessColor;
 use crate::chess::chess_pieces::chess_piece::ChessColor::{Black, White};
 use crate::chess::chess_pieces::knight::Knight;
 use crate::chess::chess_pieces::pawn::Pawn;
+use crate::chess::chess_pieces::queen::Queen;
 use crate::chess::chess_pieces::rook::Rook;
 use crate::chess::chess_slot;
 use crate::chess::chess_slot::ChessSlot;
@@ -120,6 +121,19 @@ impl ChessBoard{
 
         }
 
+        // adding black queen
+        for i in created.chess_slots.iter().filter(|x| x.get_slot_position().y == 0
+            && x.get_slot_position().x == 3){
+            let created_queen = add_widget(current_scene.clone(),Queen::new(Black));
+            i.clone().set_piece_at_slot(Some(created_queen));
+        }
+
+        // adding white queen
+        for i in created.chess_slots.iter().filter(|x| x.get_slot_position().y == 7
+            && x.get_slot_position().x == 3){
+            let created_queen = add_widget(current_scene.clone(),Queen::new(White));
+            i.clone().set_piece_at_slot(Some(created_queen));
+        }
         return created;
     }
 }
