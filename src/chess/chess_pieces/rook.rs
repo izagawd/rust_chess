@@ -30,7 +30,7 @@ static BLACK_ROOK_IMAGE: LazyLock<Texture2D> = LazyLock::new(|| {
 });
 static WHITE_ROOK_IMAGE: LazyLock<Texture2D> = LazyLock::new(|| {
 
-    Texture2D::from_file_with_format(include_bytes!("../../../pieces-basic-png/black-rook.png"),
+    Texture2D::from_file_with_format(include_bytes!("../../../pieces-basic-png/white-rook.png"),
                                      Some(Png))
 
 });
