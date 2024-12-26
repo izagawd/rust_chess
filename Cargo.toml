@@ -1,0 +1,10 @@
+[package]
+name = "rust_chess"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+macroquad = "0.4.13"
+nalgebra = "0.33.2"
+tokio = "1.42.0"
+futures = "0.3.31"

@@ -1,5 +1,7 @@
-use std::cell::{Ref, RefCell};
+use std::any::Any;
+use std::cell::{Cell, Ref, RefCell};
 use std::rc::{Rc, Weak};
+use macroquad::input::{mouse_delta_position, mouse_position};
 use macroquad::prelude::screen_width;
 use macroquad::window::screen_height;
 use nalgebra::Vector2;
@@ -9,6 +11,7 @@ use nalgebra::Vector2;
 pub enum Side{
     Normal,
     Center,
+    TopCenter,
 
 }
 #[derive(Clone,Copy,PartialEq)]
@@ -24,6 +27,7 @@ impl Default for WidgetVector{
 #[derive(Default)]
 pub struct WidgetData{
     size: RefCell<Vector2<f32>>,
+    priority: Cell<i32>,
     widget_position: RefCell<WidgetVector>,
     parent: RefCell<Option<Weak<dyn Widget>>>,
     children: RefCell<Vec<Rc<dyn Widget>>>
@@ -35,7 +39,22 @@ impl WidgetData{
 }
 
 
-pub trait Widget {
+pub trait Widget : Any{
+
+    fn is_hovered_on(&self) -> bool{
+        let mouse_pos = mouse_position();
+        let glob_pos = self.global_position();
+        let size = self.size();
+        return mouse_pos.0 >= glob_pos.x  && mouse_pos.0 <= glob_pos.x + size.x &&
+            mouse_pos.1 >= glob_pos.y && mouse_pos.1 <= glob_pos.y + size.y;
+    }
+    fn update(&self){}
+    fn set_priority(&self,priority:i32){
+        self.widget_data().priority.set(priority);
+    }
+    fn get_priority(&self) -> i32{
+        self.widget_data().priority.get()
+    }
     fn render(&self);
 
     fn local_position(&self) -> WidgetVector;
@@ -82,8 +101,18 @@ default impl<T: 'static> Widget for T {
             }
             Side::Center => {
                 let my_size_halved = self.size() / 2.0;
-                return Vector2::new(size_to_work_with.x /2.0 - my_size_halved.x
-                                    ,size_to_work_with.y / 2.0 - my_size_halved.y);
+                return Vector2::new((size_to_work_with.x /2.0 - my_size_halved.x) +
+                                        widget_pos.offset.x + position_to_work_with.x
+                                    ,(size_to_work_with.y / 2.0 - my_size_halved.y) + widget_pos.offset.y +
+                position_to_work_with.y);
+            }
+            Side::TopCenter => {
+                let my_size_halved = self.size() / 2.0;
+                return Vector2::new((size_to_work_with.x /2.0 - my_size_halved.x) +
+                                        widget_pos.offset.x + position_to_work_with.x
+                                    ,position_to_work_with.y + widget_pos.offset.y + my_size_halved.y
+                + position_to_work_with.y);
+
             }
         }
     }

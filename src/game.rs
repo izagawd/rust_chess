@@ -1,6 +1,7 @@
 use std::cell::RefCell;
 use std::rc::Rc;
 use crate::scene::Scene;
+use crate::widget::Widget;
 
 pub struct Game{
     scene: RefCell<Rc<dyn Scene>>
@@ -9,6 +10,13 @@ pub struct Game{
 
 
 impl Game{
+    pub fn update(&self){
+        for i in self.scene.borrow().get_widgets().clone(){
+            i.update();
+        }
+        let borrowed = self.scene.borrow().clone();
+        borrowed.update();
+    }
     pub fn render(&self){
         self.scene.borrow().render();
     }

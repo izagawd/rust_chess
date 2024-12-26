@@ -23,6 +23,9 @@ impl RectangleWidget{
 }
 
 impl Widget for RectangleWidget {
+    fn update(&self){
+
+    }
     fn render(&self) {
         let global_pos = self.global_position();
         let size = self.size();

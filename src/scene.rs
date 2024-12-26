@@ -1,4 +1,4 @@
-use std::cell::RefCell;
+use std::cell::{Ref, RefCell};
 use std::ops::Deref;
 use std::rc::{Rc, Weak};
 use macroquad::color::RED;
@@ -9,6 +9,12 @@ use crate::game::Game;
 use crate::widget::Widget;
 
 pub trait Scene{
+    fn get_game(&self) -> Rc<Game>{
+        self.scene_data().game.borrow().clone().and_then(|x| x.upgrade()).expect("worked")
+    }
+    fn get_widgets(&self) -> Ref<Vec<Rc<dyn Widget>>>{
+        self.scene_data().widgets. borrow()
+    }
     fn background_color(&self) -> macroquad::color::Color{
         RED
     }
@@ -35,6 +41,7 @@ pub struct SceneData{
 }
 
 impl SceneData{
+
     pub fn new() -> Self{
         Self::default()
     }
@@ -42,14 +49,22 @@ impl SceneData{
 
 fn recursive_render(gotten: &dyn Widget){
     gotten.render();
-    for i in gotten.get_children().iter(){
+    let mut sorted = gotten.get_children().clone();
+    sorted.sort_by_key(|x| x.get_priority());
+    for i in sorted{
         recursive_render(i.deref());
     }
 }
 default impl<T> Scene for T{
     fn render(&self){
         clear_background(self.background_color());
-        for i in self.scene_data().widgets.borrow().iter(){
+        let mut sorted = self.scene_data().widgets
+            .borrow()
+            .clone();
+
+        sorted.sort_by_key(|x| x.get_priority());
+        for i in sorted
+        {
             recursive_render(i.deref());
         }
     }
