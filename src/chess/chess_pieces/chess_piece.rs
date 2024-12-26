@@ -3,6 +3,7 @@ use std::rc::Rc;
 use macroquad::color::{RED, WHITE};
 use macroquad::math::Vec2;
 use macroquad::prelude::{draw_texture, draw_texture_ex, DrawTextureParams, Texture2D};
+use macroquad::ui::Drag::No;
 use nalgebra::Vector2;
 use crate::chess::chess_board::ChessBoard;
 use crate::chess::chess_slot::ChessSlot;
@@ -32,6 +33,38 @@ default impl<T: ChessPiece> Widget for T{
 
     fn as_chess_piece(self: Rc<Self>) -> Rc<dyn ChessPiece> {
         self
+    }
+}
+
+pub struct MoveDirectionResult {
+    pub collided_piece: Option<Rc<dyn ChessPiece>>,
+    pub possible_directions: Vec<Vector2<i32>>
+}
+
+
+//gets all the locations from a pieces position in a direction, until theres something blocking it
+// (eg rook can go forward until theres a piece in the way)
+pub fn recursing_direction(board: &Rc<ChessBoard>,  piece: &(impl ChessPiece + ?Sized), dir: Vector2<i32>) ->Result<MoveDirectionResult,&'static str>{
+
+    if dir == Vector2::new(0,0){
+        return Err("direction cannot be (0,0)!!");
+    }
+    if let Some(gotten_pos) = piece.get_slot(){
+        let mut vec_to_use = Vec::new();
+        let mut curr_loc = gotten_pos.get_slot_position();
+        let mut collided_piece = None;
+        while let Some(gotten) = board.get_slots().iter().filter(|x| x.get_slot_position() == curr_loc + dir).last(){
+            vec_to_use.push(gotten.get_slot_position());
+            if let Some(collided) = gotten.get_piece_at_slot(){
+                collided_piece = Some(collided);
+                break;
+            }
+            curr_loc += dir;
+
+        }
+        return Ok(MoveDirectionResult {collided_piece, possible_directions: vec_to_use });
+    } else{
+        return Ok(MoveDirectionResult {collided_piece: None, possible_directions: Vec::new() });
     }
 }
 pub trait ChessPiece : Widget {

@@ -1,9 +1,12 @@
 use std::cell::{Cell, RefCell};
 use std::rc::{Rc, Weak};
 use nalgebra::Vector2;
+use crate::chess::chess_pieces::bishop::Bishop;
 use crate::chess::chess_pieces::chess_piece::ChessColor;
 use crate::chess::chess_pieces::chess_piece::ChessColor::{Black, White};
+use crate::chess::chess_pieces::knight::Knight;
 use crate::chess::chess_pieces::pawn::Pawn;
+use crate::chess::chess_pieces::rook::Rook;
 use crate::chess::chess_slot;
 use crate::chess::chess_slot::ChessSlot;
 use crate::scene::{add_widget, Scene};
@@ -70,8 +73,52 @@ impl ChessBoard{
             i.clone().set_piece_at_slot(Some(created_pawn));
         }
 
+        // adding black rooks
+        for i in created.chess_slots.iter().filter(|x| x.get_slot_position().y == 0 &&
+            (x.get_slot_position().x == 0 || x.get_slot_position().x == 7)){
+            let created_rook = add_widget(current_scene.clone(),Rook::new(Black));
+                i.clone().set_piece_at_slot(Some(created_rook));
 
+        }
 
+        // adding white rooks
+        for i in created.chess_slots.iter().filter(|x| x.get_slot_position().y == 7 &&
+            (x.get_slot_position().x == 0 || x.get_slot_position().x == 7)){
+            let created_rook = add_widget(current_scene.clone(),Rook::new(White));
+            i.clone().set_piece_at_slot(Some(created_rook));
+
+        }
+
+        // adding black bishops
+        for i in created.chess_slots.iter().filter(|x| x.get_slot_position().y == 0 &&
+            (x.get_slot_position().x == 1 || x.get_slot_position().x == 6)){
+            let created_bishop = add_widget(current_scene.clone(),Bishop::new(Black));
+            i.clone().set_piece_at_slot(Some(created_bishop));
+
+        }
+
+        // adding white bishops
+        for i in created.chess_slots.iter().filter(|x| x.get_slot_position().y == 7 &&
+            (x.get_slot_position().x == 6 || x.get_slot_position().x == 1)){
+            let created_bishop = add_widget(current_scene.clone(),Bishop::new(White));
+            i.clone().set_piece_at_slot(Some(created_bishop));
+
+        }
+        // adding black knights
+        for i in created.chess_slots.iter().filter(|x| x.get_slot_position().y == 0 &&
+            (x.get_slot_position().x == 5 || x.get_slot_position().x == 2)){
+            let created_bishop = add_widget(current_scene.clone(),Knight::new(Black));
+            i.clone().set_piece_at_slot(Some(created_bishop));
+
+        }
+
+        // adding white knights
+        for i in created.chess_slots.iter().filter(|x| x.get_slot_position().y == 7 &&
+            (x.get_slot_position().x == 5 || x.get_slot_position().x == 2)){
+            let created_bishop = add_widget(current_scene.clone(),Knight::new(White));
+            i.clone().set_piece_at_slot(Some(created_bishop));
+
+        }
 
         return created;
     }

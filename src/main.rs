@@ -19,6 +19,9 @@ mod text_widget;
 mod chess{
 
     pub mod chess_pieces{
+        pub mod knight;
+        pub mod bishop;
+        pub mod rook;
         pub mod chess_piece;
         pub mod pawn;
     }
