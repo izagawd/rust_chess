@@ -33,7 +33,6 @@ impl ChessSlot{
         let to_clone =self.get_children().clone();
         for i in to_clone{
             i.clone().set_parent(None).expect("bruh");
-            let board = self.board.borrow().upgrade().unwrap();
             remove_widget(self.get_scene(),i);
         }
         piece.map(|x| {

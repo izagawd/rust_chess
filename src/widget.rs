@@ -167,6 +167,16 @@ default impl<T: 'static> Widget for T {
                 }
             }
             to_become_parent.widget_data().children.borrow_mut().push(self.clone());
+            let prev_parent = self.widget_data().parent.borrow().clone().and_then(|x| x.upgrade());
+            if let Some(prev_parent) = prev_parent {
+                let index = prev_parent.widget_data().children.borrow().iter().position(|x|
+                Rc::ptr_eq(&as_widget,x));
+                if let Some(index) = index {
+                    prev_parent.widget_data().children.borrow_mut().remove(index);
+                }
+
+            }
+
             *self.widget_data().parent.borrow_mut() = Some(Rc::downgrade(&to_become_parent));
             Ok(())
         } else{
@@ -178,6 +188,7 @@ default impl<T: 'static> Widget for T {
                     .position(|x| Rc::ptr_eq(x,&as_widget));
                 if let Some(gotten_index)= gotten {
 
+                    println!("{}","yo");
                     true_one.widget_data().children.borrow_mut().remove(
                         gotten_index
                     );
