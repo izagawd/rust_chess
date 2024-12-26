@@ -4,6 +4,7 @@ use nalgebra::Vector2;
 use crate::chess::chess_pieces::bishop::Bishop;
 use crate::chess::chess_pieces::chess_piece::ChessColor;
 use crate::chess::chess_pieces::chess_piece::ChessColor::{Black, White};
+use crate::chess::chess_pieces::king::King;
 use crate::chess::chess_pieces::knight::Knight;
 use crate::chess::chess_pieces::pawn::Pawn;
 use crate::chess::chess_pieces::queen::Queen;
@@ -133,6 +134,24 @@ impl ChessBoard{
             && x.get_slot_position().x == 3){
             let created_queen = add_widget(current_scene.clone(),Queen::new(White));
             i.clone().set_piece_at_slot(Some(created_queen));
+        }
+
+        // adding black king
+        for i in created.chess_slots
+            .iter()
+            .filter(|x| x.get_slot_position().y == 0
+            && x.get_slot_position().x == 4){
+            let created_king = add_widget(current_scene.clone(), King::new(Black));
+            i.clone().set_piece_at_slot(Some(created_king));
+        }
+
+        // adding white king
+        for i in created.chess_slots
+            .iter()
+            .filter(|x| x.get_slot_position().y == 7
+            && x.get_slot_position().x == 4){
+            let created_king = add_widget(current_scene.clone(), King::new(White));
+            i.clone().set_piece_at_slot(Some(created_king));
         }
         return created;
     }
