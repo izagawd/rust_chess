@@ -76,16 +76,23 @@ impl Widget for ChessSlot{
         self.handle_color();
         if self.is_hovered_on() && is_mouse_button_pressed(MouseButton::Left) &&
             let Some(piece) = self.get_piece_at_slot()
-            && piece.get_chess_color() == self.board.borrow().upgrade().unwrap().turn_taker{
+            && piece.get_chess_color() == self.board.borrow().upgrade().unwrap().turn_taker.get(){
             *self.board.borrow().upgrade().unwrap().selected_slot.borrow_mut()
             =Some(Rc::downgrade(&self))
-        } else if self.is_hovered_on() && is_mouse_button_pressed(MouseButton::Left) &&
-            let Some(unwrapped_slot)=board.selected_slot.borrow().clone().and_then(|x| x.upgrade())
-        && let piece = unwrapped_slot.get_piece_at_slot().unwrap() &&
-            piece.possible_moves(&board).iter().any(|p| *p == self.position){
-            self.set_piece_at_slot(Some(piece));
+        } else if self.is_hovered_on() && is_mouse_button_pressed(MouseButton::Left) {
+            let to_unwrap_slot = board.selected_slot.borrow().clone().and_then(|x| x.upgrade());
+            if let Some(unwrapped_slot) = to_unwrap_slot
+                && let piece = unwrapped_slot.get_piece_at_slot().unwrap() &&
+                    piece.possible_moves(&board).iter().any(|p| *p == self.position){
+                    self.set_piece_at_slot(Some(piece));
+                    board.turn_taker.set(board.turn_taker.get().get_opposite());
+                    *board.selected_slot.borrow_mut() =None;
+            }
         }
+
+
     }
+
     fn render(&self) {
         self.rectangle.render()
     }

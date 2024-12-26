@@ -1,4 +1,4 @@
-use std::cell::RefCell;
+use std::cell::{Cell, RefCell};
 use std::rc::{Rc, Weak};
 use nalgebra::Vector2;
 use crate::chess::chess_pieces::chess_piece::ChessColor;
@@ -10,7 +10,7 @@ use crate::scene::{add_widget, Scene};
 use crate::widget::{Widget, WidgetData};
 
 pub struct ChessBoard{
-    pub turn_taker: ChessColor,
+    pub turn_taker: Cell<ChessColor>,
     pub selected_slot: RefCell<Option<Weak<ChessSlot>>>,
     chess_slots: Vec<Rc<ChessSlot>>,
     widget_data: WidgetData
@@ -39,7 +39,7 @@ impl ChessBoard{
         self.selected_slot.borrow().clone().and_then(|s| s.upgrade())
     }
     pub fn new(current_scene: Rc<dyn Scene>) -> Rc<ChessBoard>{
-       let mut created = ChessBoard{turn_taker: White, selected_slot: RefCell::new(None), chess_slots: Vec::new(), widget_data: WidgetData::default()};
+       let mut created = ChessBoard{turn_taker: Cell::new(White), selected_slot: RefCell::new(None), chess_slots: Vec::new(), widget_data: WidgetData::default()};
 
         let mut vecs_of_chess : Vec<Rc<ChessSlot>> =  Vec::new();
         for i in 0..8{

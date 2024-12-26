@@ -12,6 +12,14 @@ use crate::widget::Widget;
 pub enum ChessColor{
     Black,White
 }
+impl ChessColor {
+    pub fn get_opposite(self) -> Self{
+        match self {
+            ChessColor::Black => ChessColor::White,
+            ChessColor::White => ChessColor::Black
+        }
+    }
+}
 pub struct ChessPieceData{
     chess_color: ChessColor
 }
