@@ -4,8 +4,7 @@ use std::ptr;
 use std::rc::{Rc, Weak};
 use macroquad::color::RED;
 use macroquad::prelude::clear_background;
-use macroquad::prelude::scene::clear;
-use crate::game;
+
 use crate::game::Game;
 use crate::widget::Widget;
 
@@ -69,21 +68,15 @@ impl SceneData{
 
 fn recursive_render(gotten: &dyn Widget){
     gotten.render();
-    let mut sorted = gotten.get_children().clone();
-    sorted.sort_by_key(|x| x.get_priority());
-    for i in sorted{
+
+    for i in gotten.get_children().iter() {
         recursive_render(i.deref());
     }
 }
 default impl<T> Scene for T{
     fn render(&self){
         clear_background(self.background_color());
-        let mut sorted = self.scene_data().widgets
-            .borrow()
-            .clone();
-
-        sorted.sort_by_key(|x| x.get_priority());
-        for i in sorted
+        for i in self.scene_data().widgets.borrow().iter()
         {
             recursive_render(i.deref());
         }

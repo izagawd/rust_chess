@@ -35,7 +35,7 @@ impl Default for WidgetVector{
 pub struct WidgetData{
     pub scene: RefCell<Option<Weak<dyn Scene>>>,
     size: RefCell<Vector2<f32>>,
-    priority: Cell<i32>,
+
     widget_position: RefCell<WidgetVector>,
     parent: RefCell<Option<Weak<dyn Widget>>>,
     children: RefCell<Vec<Rc<dyn Widget>>>
@@ -69,12 +69,6 @@ pub trait Widget : Any{
     /// Runs just before update
     fn update(self: Rc<Self>){}
     /// widgets with a higher priority are rendered on top of those with lower
-    fn set_priority(&self,priority:i32){
-        self.widget_data().priority.set(priority);
-    }
-    fn get_priority(&self) -> i32{
-        self.widget_data().priority.get()
-    }
 
 
     /// Implementation on how the widget is rendered. Will be called every frame

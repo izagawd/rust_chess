@@ -50,13 +50,13 @@ impl ChessBoard{
                 vecs_of_chess.push(add_widget(current_scene.clone(),ChessSlot::new(Vector2::new(i,j))))
             }
         }
-        let cloned_vecs_of_chess = vecs_of_chess.clone();
+
         created.chess_slots = vecs_of_chess;
         let created = add_widget(current_scene.clone()  ,created);
         for i in created.chess_slots.iter(){
             *i.board.borrow_mut() = Rc::downgrade(&created);
         }
-        for i in cloned_vecs_of_chess.iter(){
+        for i in created.chess_slots.iter(){
             i.clone().set_parent(Some(created.clone())).unwrap();
 
         }
