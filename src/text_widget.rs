@@ -27,7 +27,7 @@ impl Widget for TextWidget{
     fn render(&self) {
 
         let global_pos = self.global_position();
-        let text_dimensions = draw_text(self.text.as_str(),global_pos.x,global_pos.y + self.size().y,self.font_size, self.color);
+        draw_text(self.text.as_str(),global_pos.x,global_pos.y + self.size().y,self.font_size, self.color);
 
     }
 

@@ -10,8 +10,12 @@ use crate::chess::chess_pieces::chess_piece::ChessPiece;
 use crate::chess::chess_slot::ChessSlot;
 use crate::scene::Scene;
 
+
+
+
+
 #[derive(Clone,Copy,Eq,PartialEq)]
-pub enum Side{
+pub enum Alignment {
     Normal,
     Center,
     TopCenter,
@@ -20,11 +24,11 @@ pub enum Side{
 #[derive(Clone,Copy,PartialEq)]
 pub struct WidgetVector{
     pub(crate) offset: Vector2<f32>,
-    pub(crate) side: Side,
+    pub(crate) alignment: Alignment,
 }
 impl Default for WidgetVector{
     fn default()->Self{
-        Self{offset:Vector2::zeros(), side:Side::Normal}
+        Self{offset:Vector2::zeros(), alignment: Alignment::Normal}
     }
 }
 #[derive(Default)]
@@ -44,13 +48,17 @@ impl WidgetData{
 
 
 
-
+/// A widget is any object that is in a scene that can be rendered
 pub trait Widget : Any{
 
+    /// Gets the scene the widget resides in
     fn get_scene(&self) -> Rc<dyn Scene>{
         self.widget_data().scene.borrow().as_ref().unwrap().upgrade().unwrap()
     }
+    /// Gets the widget as a chess piece. If it is not a chess piece an error is thrown
     fn as_chess_piece(self: Rc<Self>) -> Rc<dyn ChessPiece>;
+
+    /// Returns whether or not the mouse is hovered on the widget
     fn is_hovered_on(&self) -> bool{
         let mouse_pos = mouse_position();
         let glob_pos = self.global_position();
@@ -58,22 +66,32 @@ pub trait Widget : Any{
         return mouse_pos.0 >= glob_pos.x  && mouse_pos.0 <= glob_pos.x + size.x &&
             mouse_pos.1 >= glob_pos.y && mouse_pos.1 <= glob_pos.y + size.y;
     }
+    /// Runs just before update
     fn update(self: Rc<Self>){}
+    /// widgets with a higher priority are rendered on top of those with lower
     fn set_priority(&self,priority:i32){
         self.widget_data().priority.set(priority);
     }
     fn get_priority(&self) -> i32{
         self.widget_data().priority.get()
     }
+
+
+    /// Implementation on how the widget is rendered. Will be called every frame
     fn render(&self);
 
+    /// Gets The position of the widget, based on its parent
     fn local_position(&self) -> WidgetVector;
 
-
+    /// Sets The position of the widget, based on its parent
     fn set_local_position(&self, value: WidgetVector);
     fn set_size(&self, value: Vector2<f32>);
     fn size(&self) -> Vector2<f32>;
+
+
+    /// Gets the position of the widget based on the screen
     fn global_position(&self) -> Vector2<f32>;
+    /// Data all widgets must have
     fn widget_data(&self) -> &WidgetData;
     fn set_parent(self: Rc<Self>, parent: Option<Rc<dyn Widget>>) -> Result<(), &'static str>;
     fn get_children(&self)->Ref<Vec<Rc<dyn Widget>>>;
@@ -109,18 +127,18 @@ default impl<T: 'static> Widget for T {
         }
         let widget_pos = self.widget_data().widget_position.borrow().clone();
 
-        match widget_pos.side {
-            Side::Normal => {
+        match widget_pos.alignment {
+            Alignment::Normal => {
                 return position_to_work_with + widget_pos.offset;
             }
-            Side::Center => {
+            Alignment::Center => {
                 let my_size_halved = self.size() / 2.0;
                 return Vector2::new((size_to_work_with.x /2.0 - my_size_halved.x) +
                                         widget_pos.offset.x + position_to_work_with.x
                                     ,(size_to_work_with.y / 2.0 - my_size_halved.y) + widget_pos.offset.y +
                 position_to_work_with.y);
             }
-            Side::TopCenter => {
+            Alignment::TopCenter => {
                 let my_size_halved = self.size() / 2.0;
                 return Vector2::new((size_to_work_with.x /2.0 - my_size_halved.x) +
                                         widget_pos.offset.x + position_to_work_with.x

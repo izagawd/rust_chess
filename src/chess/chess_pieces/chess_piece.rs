@@ -35,16 +35,22 @@ default impl<T: ChessPiece> Widget for T{
     }
 }
 pub trait ChessPiece : Widget {
+    /// Gets the current slot the chess piece is on
     fn get_slot(&self) -> Option<Rc<ChessSlot>>{
         self.get_parent().and_then(|p| match Rc::downcast::<ChessSlot>(p)  {
             Ok(gotten) => { Some(gotten)},
             Err(_) => {None}
         } )
     }
+    /// Returns either black or white depending on the chess piece
     fn get_chess_color(&self) -> ChessColor{
         self.chess_piece_data().chess_color
     }
+    ///common data every chess piece should have
     fn chess_piece_data(&self) -> &ChessPieceData;
+
+
+    /// code to easily render a chess piece with less stress
     fn render_texture(&self,texture: &Texture2D){
 
         draw_texture_ex(texture, self.global_position().x,
@@ -54,16 +60,8 @@ pub trait ChessPiece : Widget {
                 ..Default::default()
             })
     }
-    fn get_current_chess_slot(&self) -> Option<Rc<ChessSlot>>{
 
-        match self.get_parent(){
-            Some(p) => match Rc::downcast::<ChessSlot>(p){
-                Ok(slot) => return Some(slot.clone()),
-                Err(_) => return None
-            }
-            None => return None
-        }
 
-    }
+    /// Returns the possible moves this piece can do based on the state of the game
     fn possible_moves(&self,chess_board: &Rc<ChessBoard>) -> Vec<Vector2<i32>>;
 }

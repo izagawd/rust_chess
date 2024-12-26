@@ -10,9 +10,12 @@ use crate::game::Game;
 use crate::widget::Widget;
 
 pub trait Scene{
+    /// Gets the game the scene resides in
     fn get_game(&self) -> Rc<Game>{
-        self.scene_data().game.borrow().clone().and_then(|x| x.upgrade()).expect("worked")
+        self.scene_data().game.borrow().clone().and_then(|x| x.upgrade()).expect("For some reason, the game couldnt be gotten")
     }
+
+    /// Gets the widgets contained in the scene
     fn get_widgets(&self) -> Ref<Vec<Rc<dyn Widget>>>{
         self.scene_data().widgets. borrow()
     }
@@ -20,10 +23,19 @@ pub trait Scene{
         RED
     }
     fn init(self: Rc<Self>){}
+
+
+    /// The data all scenes must have
     fn scene_data(&self) -> &SceneData;
+
+
+    /// Called just before render
     fn update(self: Rc<Self>){
 
     }
+
+
+
     fn render(&self);
 }
 

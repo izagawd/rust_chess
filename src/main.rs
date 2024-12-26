@@ -14,7 +14,7 @@ mod scene;
 mod main_menu;
 mod rectangle_widget;
 mod text_widget;
-mod ImageWidget;
+
 
 mod chess{
 
@@ -29,7 +29,6 @@ mod chess{
 
 #[macroquad::main("MyGame")]
 async fn main() {
-    unsafe {std::env::set_var("debug_refcell", "true")};
     let game = Game::new(MainMenu::new());
     loop {
         game.clone().update();

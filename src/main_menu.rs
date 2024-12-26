@@ -11,7 +11,7 @@ use crate::rectangle_widget::RectangleWidget;
 use crate::scene::{add_widget, Scene, SceneData};
 use crate::text_widget::TextWidget;
 use crate::widget::{Widget, WidgetVector};
-use crate::widget::Side::{Center, Normal, TopCenter};
+use crate::widget::Alignment::{Center, Normal, TopCenter};
 
 /**
 * scene for the main menu
@@ -41,19 +41,19 @@ impl Scene for MainMenu {
     fn init(self: Rc<Self>) {
         // initializing the play button,
         let rectangle = add_widget(self.clone(), RectangleWidget::new(WidgetVector {
-            side: Center,
+            alignment: Center,
             offset: Vector2::new(0.0, 0.0),
         },Vector2::new(500.0,500.0),BLUE));
 
 
         let play_button = add_widget(self.clone(), RectangleWidget::new(WidgetVector {
-            side: Center,
+            alignment: Center,
             offset: Vector2::new(0.0, 0.0),
         },Vector2::new(300.0,60.0),RED));
 
 
         let play_text = add_widget(self.clone(), TextWidget::new(WidgetVector {
-            side: Center,
+            alignment: Center,
             offset: Vector2::new(0.0, 0.0),
         },50.0,WHITE,String::from("PLAY")));
 

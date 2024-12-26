@@ -11,7 +11,7 @@ use crate::chess::chess_pieces::chess_piece::ChessPiece;
 use crate::rectangle_widget::RectangleWidget;
 use crate::scene::remove_widget;
 use crate::widget::{Widget, WidgetData, WidgetVector};
-use crate::widget::Side::{Center, Normal};
+use crate::widget::Alignment::{Center, Normal};
 
 pub struct ChessSlot{
     original_color: Color,
@@ -42,7 +42,7 @@ impl ChessSlot{
 
             x.set_size(self.size());
             x.set_local_position(WidgetVector{
-                side: Center,
+                alignment: Center,
                 ..Default::default()
             })
         });
@@ -110,8 +110,8 @@ impl ChessSlot{
                      (position.x   * SLOT_SIZE) as f32 ,
                 (position.y * SLOT_SIZE) as f32
             ),
-            side:  Normal} , Vector2::new(SLOT_SIZE as f32, SLOT_SIZE as f32),
-            color)
+            alignment:  Normal}, Vector2::new(SLOT_SIZE as f32, SLOT_SIZE as f32),
+                                            color)
         }
     }
 }

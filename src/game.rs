@@ -3,6 +3,7 @@ use std::rc::Rc;
 use crate::scene::Scene;
 use crate::widget::Widget;
 
+/// The main source of this game. It has a scene that can be changed at runtime
 pub struct Game{
     scene: RefCell<Rc<dyn Scene>>
 }
@@ -27,6 +28,7 @@ impl Game{
         scene.init();
         made
     }
+    /// Changes the scene
     pub fn change_scene(& self, scene:Rc<dyn Scene>){
         *self.scene.borrow_mut() = scene.clone();
         scene.init();

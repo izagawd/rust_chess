@@ -23,9 +23,7 @@ impl Widget for Pawn {
         } else{
             self.render_texture(WHITE_PAWN_IMAGE.deref())
         }
-
     }
-
     fn widget_data(&self) -> &WidgetData {
         &self.widget_data
     }
@@ -83,7 +81,11 @@ impl ChessPiece for Pawn {
         } else {
             return positions;
         }
-
+        // returning here to stop pawn from being able to move forward twice if pawn is not
+        // in it's starting position
+        if my_slot_pos.y != 0 && my_slot_pos.y != 7{
+            return positions;
+        }
         let double_forward =Vector2::new(my_slot_pos.x , my_slot_pos.y + (y_incr *2));
         let position_double_forward =board.get_slots().iter().filter(|x| x.get_slot_position()
             == double_forward).last();
