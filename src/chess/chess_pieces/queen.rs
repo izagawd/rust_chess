@@ -2,6 +2,7 @@ use std::ops::Deref;
 use std::rc::Rc;
 use std::sync::LazyLock;
 use macroquad::prelude::{load_texture, Texture2D};
+use macroquad::prelude::ImageFormat::Png;
 use nalgebra::Vector2;
 use crate::chess::chess_board::ChessBoard;
 use crate::chess::chess_pieces::chess_piece::{recursing_direction, ChessColor, ChessPiece, ChessPieceData};
@@ -22,15 +23,16 @@ impl Queen{
 }
 
 static BLACK_QUEEN_IMAGE: LazyLock<Texture2D> = LazyLock::new(|| {
-    futures::executor::block_on(
 
-
-        load_texture("pieces-basic-png/black-queen.png")).unwrap()
+    Texture2D::from_file_with_format(include_bytes!("../../../pieces-basic-png/black-queen.png"),
+                                     Some(Png))
 
 });
 static WHITE_QUEEN_IMAGE: LazyLock<Texture2D> = LazyLock::new(|| {
 
-    futures::executor::block_on(    load_texture("pieces-basic-png/white-queen.png")).unwrap()
+
+    Texture2D::from_file_with_format(include_bytes!("../../../pieces-basic-png/white-queen.png"),
+                                     Some(Png))
 
 });
 impl crate::widget::Widget for Queen {

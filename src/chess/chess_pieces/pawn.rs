@@ -4,7 +4,7 @@ use nalgebra::Vector2;
 use std::ops::Deref;
 use std::rc::Rc;
 use std::sync::LazyLock;
-
+use macroquad::prelude::ImageFormat::Png;
 use crate::chess::chess_pieces::chess_piece::{ChessColor, ChessPiece, ChessPieceData};
 use crate::widget::{Widget, WidgetData};
 
@@ -28,15 +28,16 @@ impl Widget for Pawn {
 }
 
 static BLACK_PAWN_IMAGE: LazyLock<Texture2D> = LazyLock::new(|| {
-    futures::executor::block_on(
 
-
-        load_texture("pieces-basic-png/black-pawn.png")).unwrap()
+    Texture2D::from_file_with_format(include_bytes!("../../../pieces-basic-png/black-pawn.png"),
+                                     Some(Png))
 
 });
 static WHITE_PAWN_IMAGE: LazyLock<Texture2D> = LazyLock::new(|| {
 
-    futures::executor::block_on(    load_texture("pieces-basic-png/white-pawn.png")).unwrap()
+
+    Texture2D::from_file_with_format(include_bytes!("../../../pieces-basic-png/white-pawn.png"),
+                                     Some(Png))
 
 });
 impl Pawn{

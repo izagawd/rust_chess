@@ -6,6 +6,7 @@ use nalgebra::Vector2;
 use std::ops::Deref;
 use std::rc::Rc;
 use std::sync::LazyLock;
+use macroquad::prelude::ImageFormat::Png;
 
 pub struct Knight{
     data: ChessPieceData,
@@ -22,16 +23,16 @@ impl Knight{
 }
 
 static BLACK_KNIGHT_IMAGE: LazyLock<Texture2D> = LazyLock::new(|| {
-    futures::executor::block_on(
 
 
-        load_texture("pieces-basic-png/black-knight.png")).unwrap()
+    Texture2D::from_file_with_format(include_bytes!("../../../pieces-basic-png/black-knight.png"),
+                                     Some(Png))
 
 });
 static WHITE_KNIGHT_IMAGE: LazyLock<Texture2D> = LazyLock::new(|| {
 
-    futures::executor::block_on(    load_texture("pieces-basic-png/white-knight.png")).unwrap()
-
+    Texture2D::from_file_with_format(include_bytes!("../../../pieces-basic-png/white-knight.png"),
+                                     Some(Png))
 });
 impl crate::widget::Widget for Knight {
     fn widget_data(&self) -> &WidgetData{
