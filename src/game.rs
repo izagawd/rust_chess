@@ -1,7 +1,7 @@
 use std::cell::RefCell;
 use std::rc::Rc;
 use crate::scene::Scene;
-use crate::widget::Widget;
+
 
 /// The main source of this game. It has a scene that can be changed anytime
 pub struct Game{

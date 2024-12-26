@@ -1,13 +1,11 @@
-use std::any::Any;
-use std::rc::Rc;
-use macroquad::color::{RED, WHITE};
-use macroquad::math::Vec2;
-use macroquad::prelude::{draw_texture, draw_texture_ex, DrawTextureParams, Texture2D};
-use macroquad::ui::Drag::No;
-use nalgebra::Vector2;
 use crate::chess::chess_board::ChessBoard;
 use crate::chess::chess_slot::ChessSlot;
 use crate::widget::Widget;
+use macroquad::color::WHITE;
+use macroquad::math::Vec2;
+use macroquad::prelude::{draw_texture_ex, DrawTextureParams, Texture2D};
+use nalgebra::Vector2;
+use std::rc::Rc;
 
 #[derive(Clone, Copy, Eq, PartialEq)]
 pub enum ChessColor{
@@ -42,8 +40,8 @@ pub struct MoveDirectionResult {
 }
 
 
-//gets all the locations from a pieces position in a direction, until theres something blocking it
-// (eg rook can go forward until theres a piece in the way)
+/// gets all the locations from a pieces position in a direction, until there's something blocking it
+/// (eg rook can go forward until there's a piece in the way)
 pub fn recursing_direction(board: &Rc<ChessBoard>,  piece: &(impl ChessPiece + ?Sized), dir: Vector2<i32>) ->Result<MoveDirectionResult,&'static str>{
 
     if dir == Vector2::new(0,0){

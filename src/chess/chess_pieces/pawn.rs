@@ -1,11 +1,9 @@
+use crate::chess::chess_board::ChessBoard;
+use macroquad::prelude::{load_texture, Texture2D};
+use nalgebra::Vector2;
 use std::ops::Deref;
 use std::rc::Rc;
 use std::sync::LazyLock;
-use macroquad::color::BLACK;
-use macroquad::experimental::scene::Handle;
-use macroquad::prelude::{load_texture, Texture2D};
-use nalgebra::Vector2;
-use crate::chess::chess_board::ChessBoard;
 
 use crate::chess::chess_pieces::chess_piece::{ChessColor, ChessPiece, ChessPieceData};
 use crate::widget::{Widget, WidgetData};

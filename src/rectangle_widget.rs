@@ -1,10 +1,9 @@
-use std::cell::Cell;
-use std::rc::Rc;
+use crate::widget::{Widget, WidgetData, WidgetVector};
 use macroquad::color::Color;
-use macroquad::miniquad::KeyCode::W;
 use macroquad::shapes::draw_rectangle;
 use nalgebra::Vector2;
-use crate::widget::{Widget, WidgetData, WidgetVector};
+use std::cell::Cell;
+use std::rc::Rc;
 
 
 pub struct RectangleWidget{

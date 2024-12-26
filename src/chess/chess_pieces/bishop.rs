@@ -21,14 +21,14 @@ impl Bishop{
     }
 }
 
-static BLACK_Bishop_IMAGE: LazyLock<Texture2D> = LazyLock::new(|| {
+static BLACK_BISHOP_IMAGE: LazyLock<Texture2D> = LazyLock::new(|| {
     futures::executor::block_on(
 
 
         load_texture("pieces-basic-png/black-bishop.png")).unwrap()
 
 });
-static WHITE_Bishop_IMAGE: LazyLock<Texture2D> = LazyLock::new(|| {
+static WHITE_BISHOP_IMAGE: LazyLock<Texture2D> = LazyLock::new(|| {
 
     futures::executor::block_on(    load_texture("pieces-basic-png/white-bishop.png")).unwrap()
 
@@ -40,9 +40,9 @@ impl crate::widget::Widget for Bishop {
     fn render(&self) {
         match self.get_chess_color() {
             ChessColor::Black => {
-                self.render_texture(BLACK_Bishop_IMAGE.deref());
+                self.render_texture(BLACK_BISHOP_IMAGE.deref());
             }
-            ChessColor::White => {self.render_texture(WHITE_Bishop_IMAGE.deref());}
+            ChessColor::White => {self.render_texture(WHITE_BISHOP_IMAGE.deref());}
         }
     }
 }

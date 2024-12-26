@@ -1,11 +1,11 @@
+use crate::chess::chess_board::ChessBoard;
+use crate::chess::chess_pieces::chess_piece::{ChessColor, ChessPiece, ChessPieceData};
+use crate::widget::WidgetData;
+use macroquad::prelude::{load_texture, Texture2D};
+use nalgebra::Vector2;
 use std::ops::Deref;
 use std::rc::Rc;
 use std::sync::LazyLock;
-use macroquad::prelude::{load_texture, Texture2D};
-use nalgebra::Vector2;
-use crate::chess::chess_board::ChessBoard;
-use crate::chess::chess_pieces::chess_piece::{recursing_direction, ChessColor, ChessPiece, ChessPieceData};
-use crate::widget::WidgetData;
 
 pub struct Knight{
     data: ChessPieceData,
@@ -21,14 +21,14 @@ impl Knight{
     }
 }
 
-static BLACK_Knight_IMAGE: LazyLock<Texture2D> = LazyLock::new(|| {
+static BLACK_KNIGHT_IMAGE: LazyLock<Texture2D> = LazyLock::new(|| {
     futures::executor::block_on(
 
 
         load_texture("pieces-basic-png/black-knight.png")).unwrap()
 
 });
-static WHITE_Knight_IMAGE: LazyLock<Texture2D> = LazyLock::new(|| {
+static WHITE_KNIGHT_IMAGE: LazyLock<Texture2D> = LazyLock::new(|| {
 
     futures::executor::block_on(    load_texture("pieces-basic-png/white-knight.png")).unwrap()
 
@@ -40,9 +40,9 @@ impl crate::widget::Widget for Knight {
     fn render(&self) {
         match self.get_chess_color() {
             ChessColor::Black => {
-                self.render_texture(BLACK_Knight_IMAGE.deref());
+                self.render_texture(BLACK_KNIGHT_IMAGE.deref());
             }
-            ChessColor::White => {self.render_texture(WHITE_Knight_IMAGE.deref());}
+            ChessColor::White => {self.render_texture(WHITE_KNIGHT_IMAGE.deref());}
         }
     }
 }

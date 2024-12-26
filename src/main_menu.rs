@@ -1,17 +1,14 @@
-use std::cell::OnceCell;
-use std::ops::Deref;
-use std::rc::{Rc, Weak};
-use std::sync::RwLock;
-use macroquad::color::{Color, BLUE, RED, WHITE};
-use macroquad::input::{is_mouse_button_down, MouseButton};
-use nalgebra::Vector2;
-use crate::chess::chess_board::ChessBoard;
 use crate::chess::chess_game::ChessGame;
 use crate::rectangle_widget::RectangleWidget;
 use crate::scene::{add_widget, Scene, SceneData};
 use crate::text_widget::TextWidget;
+use crate::widget::Alignment::Center;
 use crate::widget::{Widget, WidgetVector};
-use crate::widget::Alignment::{Center, Normal, TopCenter};
+use macroquad::color::{BLUE, RED, WHITE};
+use macroquad::input::{is_mouse_button_down, MouseButton};
+use nalgebra::Vector2;
+use std::cell::OnceCell;
+use std::rc::{Rc, Weak};
 
 /**
 * scene for the main menu
@@ -27,7 +24,7 @@ impl MainMenu {
     }
 }
 
-static HEY : RwLock<i32> = RwLock::new(0);
+
 impl Scene for MainMenu {
     fn update(self: Rc<Self>) {
        let za_play = self.play_button_widget.get().and_then(|w| w.upgrade());

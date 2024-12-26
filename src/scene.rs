@@ -1,9 +1,8 @@
-use std::cell::{Ref, RefCell};
-use std::ops::Deref;
-use std::ptr;
-use std::rc::{Rc, Weak};
 use macroquad::color::RED;
 use macroquad::prelude::clear_background;
+use std::cell::{Ref, RefCell};
+use std::ops::Deref;
+use std::rc::{Rc, Weak};
 
 use crate::game::Game;
 use crate::widget::Widget;

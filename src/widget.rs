@@ -1,17 +1,13 @@
-use std::any::{type_name, Any, TypeId};
-use std::cell::{Cell, Ref, RefCell};
+use std::any::Any;
+use std::cell::{Ref, RefCell};
 
-use std::rc::{Rc, Weak};
-use macroquad::input::{mouse_delta_position, mouse_position};
+use crate::chess::chess_pieces::chess_piece::ChessPiece;
+use crate::scene::Scene;
+use macroquad::input::mouse_position;
 use macroquad::prelude::screen_width;
 use macroquad::window::screen_height;
 use nalgebra::Vector2;
-use crate::chess::chess_pieces::chess_piece::ChessPiece;
-use crate::chess::chess_slot::ChessSlot;
-use crate::scene::Scene;
-
-
-
+use std::rc::{Rc, Weak};
 
 
 #[derive(Clone,Copy,Eq,PartialEq)]
@@ -110,7 +106,7 @@ default impl<T: 'static> Widget for T {
     }
     fn global_position(&self) -> Vector2<f32>{
         let mut position_to_work_with = Vector2::new(0.0, 0.0);
-        let mut size_to_work_with : Vector2<f32>;
+        let size_to_work_with : Vector2<f32>;
 
         let za_parent = self.get_parent();
         if let Some(ref parent) = za_parent {

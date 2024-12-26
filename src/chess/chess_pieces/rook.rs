@@ -1,13 +1,11 @@
-use std::cell::Ref;
+use crate::chess::chess_board::ChessBoard;
+use crate::chess::chess_pieces::chess_piece::{recursing_direction, ChessColor, ChessPiece, ChessPieceData};
+use crate::widget::{Widget, WidgetData};
+use macroquad::prelude::{load_texture, Texture2D};
+use nalgebra::Vector2;
 use std::ops::Deref;
 use std::rc::Rc;
 use std::sync::LazyLock;
-use macroquad::color::Color;
-use macroquad::prelude::{load_texture, Texture2D};
-use nalgebra::Vector2;
-use crate::chess::chess_board::ChessBoard;
-use crate::chess::chess_pieces::chess_piece::{recursing_direction, ChessColor, ChessPiece, ChessPieceData};
-use crate::widget::{Widget, WidgetData, WidgetVector};
 
 pub struct Rook{
     data: ChessPieceData,

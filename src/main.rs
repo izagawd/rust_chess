@@ -6,7 +6,7 @@
 use crate::game::Game;
 use crate::main_menu::MainMenu;
 use macroquad::prelude::*;
-use crate::widget::Widget;
+
 
 mod widget;
 mod game;

@@ -21,14 +21,14 @@ impl Queen{
     }
 }
 
-static BLACK_Queen_IMAGE: LazyLock<Texture2D> = LazyLock::new(|| {
+static BLACK_QUEEN_IMAGE: LazyLock<Texture2D> = LazyLock::new(|| {
     futures::executor::block_on(
 
 
         load_texture("pieces-basic-png/black-queen.png")).unwrap()
 
 });
-static WHITE_Queen_IMAGE: LazyLock<Texture2D> = LazyLock::new(|| {
+static WHITE_QUEEN_IMAGE: LazyLock<Texture2D> = LazyLock::new(|| {
 
     futures::executor::block_on(    load_texture("pieces-basic-png/white-queen.png")).unwrap()
 
@@ -40,9 +40,9 @@ impl crate::widget::Widget for Queen {
     fn render(&self) {
         match self.get_chess_color() {
             ChessColor::Black => {
-                self.render_texture(BLACK_Queen_IMAGE.deref());
+                self.render_texture(BLACK_QUEEN_IMAGE.deref());
             }
-            ChessColor::White => {self.render_texture(WHITE_Queen_IMAGE.deref());}
+            ChessColor::White => {self.render_texture(WHITE_QUEEN_IMAGE.deref());}
         }
     }
 }

@@ -1,17 +1,17 @@
-use std::cell::RefCell;
-use std::ops::Deref;
-use std::ptr;
-use std::rc::{Rc, Weak};
-use macroquad::color::{BLACK, BLUE, DARKGRAY, GRAY, GREEN, LIGHTGRAY, RED, WHITE};
-use macroquad::input::MouseButton;
-use macroquad::prelude::{is_mouse_button_pressed, Color};
-use nalgebra::Vector2;
 use crate::chess::chess_board::ChessBoard;
 use crate::chess::chess_pieces::chess_piece::ChessPiece;
 use crate::rectangle_widget::RectangleWidget;
 use crate::scene::remove_widget;
-use crate::widget::{Widget, WidgetData, WidgetVector};
 use crate::widget::Alignment::{Center, Normal};
+use crate::widget::{Widget, WidgetData, WidgetVector};
+use macroquad::color::{DARKGRAY, GREEN, LIGHTGRAY};
+use macroquad::input::MouseButton;
+use macroquad::prelude::{is_mouse_button_pressed, Color};
+use nalgebra::Vector2;
+use std::cell::RefCell;
+use std::ops::Deref;
+use std::ptr;
+use std::rc::{Rc, Weak};
 
 pub struct ChessSlot{
     original_color: Color,
