@@ -17,7 +17,7 @@ mod text_widget;
 mod ImageWidget;
 
 mod chess{
-    pub mod chess_piece_texture;
+
     pub mod chess_pieces{
         pub mod chess_piece;
         pub mod pawn;
@@ -31,7 +31,7 @@ mod chess{
 async fn main() {
     let game = Game::new(MainMenu::new());
     loop {
-        game.update();
+        game.clone().update();
         game.render();
 
         next_frame().await

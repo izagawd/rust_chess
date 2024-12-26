@@ -10,7 +10,7 @@ pub struct Game{
 
 
 impl Game{
-    pub fn update(&self){
+    pub fn update(self: Rc<Self>){
         for i in self.scene.borrow().get_widgets().clone(){
             i.update();
         }

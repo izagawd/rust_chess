@@ -20,7 +20,7 @@ pub trait Scene{
     }
     fn init(&self){}
     fn scene_data(&self) -> &SceneData;
-    fn update(&self){
+    fn update(self: Rc<Self>){
 
     }
     fn render(&self);

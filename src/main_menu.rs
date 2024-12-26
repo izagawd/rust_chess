@@ -29,7 +29,7 @@ impl MainMenu {
 
 static HEY : RwLock<i32> = RwLock::new(0);
 impl Scene for MainMenu {
-    fn update(&self) {
+    fn update(self: Rc<Self>) {
        let za_play = self.play_button_widget.get().and_then(|w| w.upgrade());
         if let Some(za_play) = za_play {
             if za_play.is_hovered_on() && is_mouse_button_down(MouseButton::Left){
@@ -57,9 +57,11 @@ impl Scene for MainMenu {
             offset: Vector2::new(0.0, 0.0),
         },50.0,WHITE,String::from("PLAY")));
 
-        play_button.clone().add_child(play_text.clone()).expect("ugh");
+        play_text.clone().set_parent(Some(play_button.clone())).expect("ugh");
+
         self.play_button_widget.set(Rc::downgrade(&play_button));
-        rectangle.add_child(play_button).expect("ugh");
+        play_button.set_parent(Some(rectangle)).expect("ugh");
+
 
     }
     fn scene_data(&self) -> &SceneData {

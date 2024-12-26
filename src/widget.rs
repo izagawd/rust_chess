@@ -1,11 +1,12 @@
-use std::any::Any;
+use std::any::{type_name, Any, TypeId};
 use std::cell::{Cell, Ref, RefCell};
+
 use std::rc::{Rc, Weak};
 use macroquad::input::{mouse_delta_position, mouse_position};
 use macroquad::prelude::screen_width;
 use macroquad::window::screen_height;
 use nalgebra::Vector2;
-
+use crate::chess::chess_slot::ChessSlot;
 
 #[derive(Clone,Copy,Eq,PartialEq)]
 pub enum Side{
@@ -48,7 +49,7 @@ pub trait Widget : Any{
         return mouse_pos.0 >= glob_pos.x  && mouse_pos.0 <= glob_pos.x + size.x &&
             mouse_pos.1 >= glob_pos.y && mouse_pos.1 <= glob_pos.y + size.y;
     }
-    fn update(&self){}
+    fn update(self: Rc<Self>){}
     fn set_priority(&self,priority:i32){
         self.widget_data().priority.set(priority);
     }
@@ -59,17 +60,19 @@ pub trait Widget : Any{
 
     fn local_position(&self) -> WidgetVector;
 
+
     fn set_local_position(&self, value: WidgetVector);
     fn set_size(&self, value: Vector2<f32>);
     fn size(&self) -> Vector2<f32>;
     fn global_position(&self) -> Vector2<f32>;
     fn widget_data(&self) -> &WidgetData;
-    fn add_child(self: Rc<Self>,to_add: Rc<dyn Widget>) -> Result<(), &'static str>;
+    fn set_parent(self: Rc<Self>, parent: Option<Rc<dyn Widget>>) -> Result<(), &'static str>;
     fn get_children(&self)->Ref<Vec<Rc<dyn Widget>>>;
 
     fn get_parent(&self)->Option<Rc<dyn Widget>>;
 }
 default impl<T: 'static> Widget for T {
+
     fn size(&self) -> Vector2<f32>{
         self.widget_data().size.borrow().clone()
     }
@@ -126,28 +129,51 @@ default impl<T: 'static> Widget for T {
     fn get_children(&self)->Ref<Vec<Rc<dyn Widget>>>{
         self.widget_data().children.borrow()
     }
-    fn add_child(self: Rc<Self>,to_add: Rc<dyn Widget>) -> Result<(),&'static str> {
+    fn set_parent(self: Rc<Self>,parent: Option<Rc<dyn Widget>>) -> Result<(),&'static str> {
 
-        let as_widget : Rc<dyn Widget> = self.clone();
-        if Rc::ptr_eq(&as_widget,&to_add) {
-            return Err("something went wrong");
-        }
-        if self.widget_data().children.borrow().iter().any(
-            |w| Rc::ptr_eq(&to_add, &w)) {
-            return Ok(())
-        }
-        let mut curr_parent = self.widget_data().parent.borrow().clone();
-        while let Some(ref parent) = curr_parent {
-            if let Some(parent) = parent.upgrade() {
-                if Rc::ptr_eq(&to_add, &parent) {
-                    return Err("something went wrong")
-                }
-            } else{
-                break
+
+
+        let as_widget : Rc<dyn Widget> =self.clone();
+        if let Some(to_become_parent) = parent{
+
+            if Rc::ptr_eq(&as_widget,&to_become_parent) {
+                return Err("something went wrong");
             }
+
+            if to_become_parent.widget_data().children.borrow().iter().any(
+                |w| Rc::ptr_eq(&as_widget, &w)) {
+                return Ok(())
+            }
+            let mut curr_parent = to_become_parent.widget_data().parent.borrow().clone();
+            while let Some(ref parent) = curr_parent {
+                if let Some(parent) = parent.upgrade() {
+                    if Rc::ptr_eq(&as_widget, &parent) {
+                        return Err("something went wrong")
+                    }
+                    curr_parent = parent.get_parent().and_then(|x| Some(Rc::downgrade(&x)))
+                } else{
+                    break
+                }
+            }
+            to_become_parent.widget_data().children.borrow_mut().push(self.clone());
+            *self.widget_data().parent.borrow_mut() = Some(Rc::downgrade(&to_become_parent));
+            Ok(())
+        } else{
+            let curr_parent = self.widget_data().parent.borrow().clone().and_then(|x| x.upgrade());
+
+            if let Some(true_one) = curr_parent {
+                if let Some(gotten_index) = true_one.widget_data().children.borrow().iter()
+                    .position(|x| Rc::ptr_eq(x,&as_widget)){
+
+                    true_one.widget_data().children.borrow_mut().remove(
+                        gotten_index
+                    );
+                }
+            }
+            *self.widget_data().parent.borrow_mut() = None;
+            return Ok(());
+
         }
-        self.widget_data().children.borrow_mut().push(to_add.clone());
-        *to_add.widget_data().parent.borrow_mut() = Some(Rc::downgrade(&as_widget));
-        Ok(())
+
     }
 }
