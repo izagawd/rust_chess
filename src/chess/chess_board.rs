@@ -59,13 +59,13 @@ impl ChessBoard{
         }
 
         //adding black pawns..
-        for i in created.chess_slots.iter().filter(|x| x.get_slot_position().y == 0){
+        for i in created.chess_slots.iter().filter(|x| x.get_slot_position().y == 1){
             let created_pawn =      add_widget(current_scene.clone(),Pawn::new(Black));
            i.clone().set_piece_at_slot(Some(created_pawn));
         }
 
         //adding white pawns..
-        for i in created.chess_slots.iter().filter(|x| x.get_slot_position().y == 7){
+        for i in created.chess_slots.iter().filter(|x| x.get_slot_position().y == 6){
             let created_pawn =      add_widget(current_scene.clone(),Pawn::new(White));
             i.clone().set_piece_at_slot(Some(created_pawn));
         }

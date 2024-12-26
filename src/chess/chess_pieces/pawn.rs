@@ -56,10 +56,13 @@ impl ChessPiece for Pawn {
     fn possible_moves(&self, board: &Rc<ChessBoard>) -> Vec<Vector2<i32>> {
         let mut positions = Vec::new();
         let my_slot_pos = self.get_slot().unwrap().get_slot_position();
+
+        // used to determine whether the pawn can move forward or backward depending on it's color
         let mut y_incr = -1;
         if self.get_chess_color() == ChessColor::Black{
             y_incr = 1;
         }
+
         let top_left =Vector2::new(my_slot_pos.x -1 , my_slot_pos.y + y_incr);
         let top_right =Vector2::new(my_slot_pos.x + 1 , my_slot_pos.y + y_incr);
         let position_at_top_left = board.get_slots().iter().filter(|x| x.get_slot_position()
@@ -83,7 +86,7 @@ impl ChessPiece for Pawn {
         }
         // returning here to stop pawn from being able to move forward twice if pawn is not
         // in it's starting position
-        if my_slot_pos.y != 0 && my_slot_pos.y != 7{
+        if my_slot_pos.y != 1 && my_slot_pos.y != 6{
             return positions;
         }
         let double_forward =Vector2::new(my_slot_pos.x , my_slot_pos.y + (y_incr *2));
