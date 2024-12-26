@@ -1,7 +1,7 @@
 
 #![feature(trait_upcasting)]
 #![feature(specialization)]
-
+#![feature(let_chains)]
 
 use crate::game::Game;
 use crate::main_menu::MainMenu;
@@ -29,6 +29,7 @@ mod chess{
 
 #[macroquad::main("MyGame")]
 async fn main() {
+    unsafe {std::env::set_var("debug_refcell", "true")};
     let game = Game::new(MainMenu::new());
     loop {
         game.clone().update();

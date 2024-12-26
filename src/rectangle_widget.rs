@@ -26,6 +26,7 @@ impl RectangleWidget{
 }
 
 impl Widget for RectangleWidget {
+
     fn update(self: Rc<Self>){
 
     }

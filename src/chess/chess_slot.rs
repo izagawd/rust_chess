@@ -7,7 +7,9 @@ use macroquad::input::MouseButton;
 use macroquad::prelude::{is_mouse_button_pressed, Color};
 use nalgebra::Vector2;
 use crate::chess::chess_board::ChessBoard;
+use crate::chess::chess_pieces::chess_piece::ChessPiece;
 use crate::rectangle_widget::RectangleWidget;
+use crate::scene::remove_widget;
 use crate::widget::{Widget, WidgetData, WidgetVector};
 use crate::widget::Side::{Center, Normal};
 
@@ -23,13 +25,16 @@ impl ChessSlot{
     pub fn get_slot_position(&self) -> Vector2<i32>{
         self.position
     }
-    pub fn get_piece_at_slot(&self) -> Option<Rc<dyn Widget>>{
-        self.get_children().first().map(|w| w.clone())
+    pub fn get_piece_at_slot(&self) -> Option<Rc<dyn ChessPiece>>{
+        self.get_children().first().map(|w| w.clone().as_chess_piece())
     }
 
-    pub fn set_piece_at_slot(self: Rc<Self>, piece: Option<Rc<dyn Widget>>){
-        for i in self.get_children().clone(){
-            i.set_parent(None);
+    pub fn set_piece_at_slot(self: Rc<Self>, piece: Option<Rc<dyn ChessPiece>>){
+        let to_clone =self.get_children().clone();
+        for i in to_clone{
+            i.clone().set_parent(None).expect("bruh");
+            let board = self.board.borrow().upgrade().unwrap();
+            remove_widget(self.get_scene(),i);
         }
         piece.map(|x| {
 
@@ -67,10 +72,18 @@ impl Widget for ChessSlot{
     }
 
     fn update(self: Rc<Self>) {
+        let board= self.board.borrow().upgrade().unwrap();
         self.handle_color();
-        if self.is_hovered_on() && is_mouse_button_pressed(MouseButton::Left){
+        if self.is_hovered_on() && is_mouse_button_pressed(MouseButton::Left) &&
+            let Some(piece) = self.get_piece_at_slot()
+            && piece.get_chess_color() == self.board.borrow().upgrade().unwrap().turn_taker{
             *self.board.borrow().upgrade().unwrap().selected_slot.borrow_mut()
             =Some(Rc::downgrade(&self))
+        } else if self.is_hovered_on() && is_mouse_button_pressed(MouseButton::Left) &&
+            let Some(unwrapped_slot)=board.selected_slot.borrow().clone().and_then(|x| x.upgrade())
+        && let piece = unwrapped_slot.get_piece_at_slot().unwrap() &&
+            piece.possible_moves(&board).iter().any(|p| *p == self.position){
+            self.set_piece_at_slot(Some(piece));
         }
     }
     fn render(&self) {

@@ -55,7 +55,41 @@ impl ChessPiece for Pawn {
     fn chess_piece_data(&self) -> &ChessPieceData {
         &self.chess_piece_data
     }
-    fn possible_moves(&self, _: &Rc<ChessBoard>) -> Vec<Vector2<i32>> {
-        Vec::new()
+    fn possible_moves(&self, board: &Rc<ChessBoard>) -> Vec<Vector2<i32>> {
+        let mut positions = Vec::new();
+        let my_slot_pos = self.get_slot().unwrap().get_slot_position();
+        let mut y_incr = -1;
+        if self.get_chess_color() == ChessColor::Black{
+            y_incr = 1;
+        }
+        let top_left =Vector2::new(my_slot_pos.x -1 , my_slot_pos.y + y_incr);
+        let top_right =Vector2::new(my_slot_pos.x + 1 , my_slot_pos.y + y_incr);
+        let position_at_top_left = board.get_slots().iter().filter(|x| x.get_slot_position()
+        == top_left).last();
+        let position_at_top_right = board.get_slots().iter().filter(|x| x.get_slot_position()
+            == top_right).last();
+
+        if let Some(position) = position_at_top_left && position.get_piece_at_slot().is_some() {
+            positions.push(top_left);
+        }
+        if let Some(position) = position_at_top_right && position.get_piece_at_slot().is_some() {
+            positions.push(top_right);
+        }
+        let forward =Vector2::new(my_slot_pos.x , my_slot_pos.y + y_incr);
+        let position_forward = board.get_slots().iter().filter(|x| x.get_slot_position()
+            == forward).last();
+        if let Some(position) = position_forward && !position.get_piece_at_slot().is_some() {
+            positions.push(forward);
+        } else {
+            return positions;
+        }
+
+        let double_forward =Vector2::new(my_slot_pos.x , my_slot_pos.y + (y_incr *2));
+        let position_double_forward =board.get_slots().iter().filter(|x| x.get_slot_position()
+            == double_forward).last();
+        if let Some(position) = position_double_forward && !position.get_piece_at_slot().is_some() {
+            positions.push(double_forward);
+        }
+        positions
     }
 }

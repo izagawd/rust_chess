@@ -11,7 +11,8 @@ pub struct Game{
 
 impl Game{
     pub fn update(self: Rc<Self>){
-        for i in self.scene.borrow().get_widgets().clone(){
+        let cloned = self.scene.borrow().get_widgets().clone();
+        for i in cloned{
             i.update();
         }
         let borrowed = self.scene.borrow().clone();

@@ -1,5 +1,6 @@
 use std::cell::{Ref, RefCell};
 use std::ops::Deref;
+use std::ptr;
 use std::rc::{Rc, Weak};
 use macroquad::color::RED;
 use macroquad::prelude::clear_background;
@@ -18,7 +19,7 @@ pub trait Scene{
     fn background_color(&self) -> macroquad::color::Color{
         RED
     }
-    fn init(&self){}
+    fn init(self: Rc<Self>){}
     fn scene_data(&self) -> &SceneData;
     fn update(self: Rc<Self>){
 
@@ -26,13 +27,19 @@ pub trait Scene{
     fn render(&self);
 }
 
-pub fn add_widget<T: Widget + 'static>(scene: &dyn Scene, widget: T) -> Rc<T>{
+pub fn add_widget<T: Widget + 'static>(scene: Rc<dyn Scene>, widget: T) -> Rc<T>{
 
     let created = Rc::new(widget);
     scene.scene_data().widgets.borrow_mut().push(created.clone());
+    *created.widget_data().scene.borrow_mut() = Some(Rc::downgrade(&scene));
     created
 }
+pub fn remove_widget(scene:Rc<dyn Scene>, widget: Rc<dyn Widget>) {
+    widget.clone().set_parent(None).expect("parent failed");
+    let pos = scene.scene_data().widgets.borrow().iter().position(|x| Rc::ptr_eq(x, &widget)).unwrap();
+    scene.scene_data().widgets.borrow_mut().remove(pos);
 
+}
 
 #[derive(Default)]
 pub struct SceneData{

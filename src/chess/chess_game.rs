@@ -1,3 +1,4 @@
+use std::rc::Rc;
 use nalgebra::Vector2;
 use crate::chess::chess_board::ChessBoard;
 use crate::scene::{Scene, SceneData};
@@ -17,7 +18,7 @@ impl ChessGame {
     }
 }
 impl Scene for ChessGame {
-    fn init(&self) {
+    fn init(self: Rc<Self>) {
         let board = ChessBoard::new(self);
         board.set_local_position(WidgetVector{
             side: Center,

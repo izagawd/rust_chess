@@ -38,21 +38,21 @@ impl Scene for MainMenu {
         }
 
     }
-    fn init(&self) {
+    fn init(self: Rc<Self>) {
         // initializing the play button,
-        let rectangle = add_widget(self, RectangleWidget::new(WidgetVector {
+        let rectangle = add_widget(self.clone(), RectangleWidget::new(WidgetVector {
             side: Center,
             offset: Vector2::new(0.0, 0.0),
         },Vector2::new(500.0,500.0),BLUE));
 
 
-        let play_button = add_widget(self, RectangleWidget::new(WidgetVector {
+        let play_button = add_widget(self.clone(), RectangleWidget::new(WidgetVector {
             side: Center,
             offset: Vector2::new(0.0, 0.0),
         },Vector2::new(300.0,60.0),RED));
 
 
-        let play_text = add_widget(self, TextWidget::new(WidgetVector {
+        let play_text = add_widget(self.clone(), TextWidget::new(WidgetVector {
             side: Center,
             offset: Vector2::new(0.0, 0.0),
         },50.0,WHITE,String::from("PLAY")));

@@ -20,7 +20,19 @@ impl ChessPieceData{
         Self{chess_color}
     }
 }
+default impl<T: ChessPiece> Widget for T{
+
+    fn as_chess_piece(self: Rc<Self>) -> Rc<dyn ChessPiece> {
+        self
+    }
+}
 pub trait ChessPiece : Widget {
+    fn get_slot(&self) -> Option<Rc<ChessSlot>>{
+        self.get_parent().and_then(|p| match Rc::downcast::<ChessSlot>(p)  {
+            Ok(gotten) => { Some(gotten)},
+            Err(_) => {None}
+        } )
+    }
     fn get_chess_color(&self) -> ChessColor{
         self.chess_piece_data().chess_color
     }

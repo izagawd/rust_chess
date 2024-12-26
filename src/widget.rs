@@ -6,7 +6,9 @@ use macroquad::input::{mouse_delta_position, mouse_position};
 use macroquad::prelude::screen_width;
 use macroquad::window::screen_height;
 use nalgebra::Vector2;
+use crate::chess::chess_pieces::chess_piece::ChessPiece;
 use crate::chess::chess_slot::ChessSlot;
+use crate::scene::Scene;
 
 #[derive(Clone,Copy,Eq,PartialEq)]
 pub enum Side{
@@ -27,6 +29,7 @@ impl Default for WidgetVector{
 }
 #[derive(Default)]
 pub struct WidgetData{
+    pub scene: RefCell<Option<Weak<dyn Scene>>>,
     size: RefCell<Vector2<f32>>,
     priority: Cell<i32>,
     widget_position: RefCell<WidgetVector>,
@@ -40,8 +43,14 @@ impl WidgetData{
 }
 
 
+
+
 pub trait Widget : Any{
 
+    fn get_scene(&self) -> Rc<dyn Scene>{
+        self.widget_data().scene.borrow().as_ref().unwrap().upgrade().unwrap()
+    }
+    fn as_chess_piece(self: Rc<Self>) -> Rc<dyn ChessPiece>;
     fn is_hovered_on(&self) -> bool{
         let mouse_pos = mouse_position();
         let glob_pos = self.global_position();
@@ -72,7 +81,9 @@ pub trait Widget : Any{
     fn get_parent(&self)->Option<Rc<dyn Widget>>;
 }
 default impl<T: 'static> Widget for T {
-
+    fn as_chess_piece(self: Rc<Self>) -> Rc<dyn ChessPiece> {
+        panic!()
+    }
     fn size(&self) -> Vector2<f32>{
         self.widget_data().size.borrow().clone()
     }
@@ -162,8 +173,10 @@ default impl<T: 'static> Widget for T {
             let curr_parent = self.widget_data().parent.borrow().clone().and_then(|x| x.upgrade());
 
             if let Some(true_one) = curr_parent {
-                if let Some(gotten_index) = true_one.widget_data().children.borrow().iter()
-                    .position(|x| Rc::ptr_eq(x,&as_widget)){
+
+                let gotten = true_one.widget_data().children.borrow().iter()
+                    .position(|x| Rc::ptr_eq(x,&as_widget));
+                if let Some(gotten_index)= gotten {
 
                     true_one.widget_data().children.borrow_mut().remove(
                         gotten_index
