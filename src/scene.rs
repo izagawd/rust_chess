@@ -10,7 +10,7 @@ use crate::widget::Widget;
 pub trait Scene{
     /// Gets the game the scene resides in
     fn get_game(&self) -> Rc<Game>{
-        self.scene_data().game.borrow().clone().and_then(|x| x.upgrade())
+        self.scene_data().game.borrow().as_ref().and_then(|x| x.upgrade())
             .unwrap()
     }
 

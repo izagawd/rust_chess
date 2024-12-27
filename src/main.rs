@@ -17,7 +17,6 @@ mod text_widget;
 
 
 mod chess{
-
     pub mod chess_pieces{
         pub mod king;
         pub mod queen;
