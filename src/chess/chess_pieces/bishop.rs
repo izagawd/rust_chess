@@ -56,10 +56,10 @@ impl ChessPiece for Bishop {
         &self.data
     }
     fn possible_moves(&self, chess_board: &Rc<ChessBoard>) -> Vec<Vector2<i32>> {
-        let mut right_up = recursing_direction(chess_board, self, Vector2::new(1, 1)).unwrap().possible_directions;
-        let mut left_down = recursing_direction(chess_board, self, Vector2::new(-1, -1)).unwrap().possible_directions;
-        let mut left_up = recursing_direction(chess_board, self, Vector2::new(-1, 1)).unwrap().possible_directions;
-        let mut right_down = recursing_direction(chess_board, self, Vector2::new(1, -1)).unwrap().possible_directions;
+        let mut right_up = recursing_direction(chess_board, self, Vector2::new(1, 1)).unwrap().possible_positions;
+        let mut left_down = recursing_direction(chess_board, self, Vector2::new(-1, -1)).unwrap().possible_positions;
+        let mut left_up = recursing_direction(chess_board, self, Vector2::new(-1, 1)).unwrap().possible_positions;
+        let mut right_down = recursing_direction(chess_board, self, Vector2::new(1, -1)).unwrap().possible_positions;
         right_up.append(&mut left_down);
         right_up.append(&mut left_up);
         right_up.append(&mut right_down);
