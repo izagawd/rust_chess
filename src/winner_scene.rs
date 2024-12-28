@@ -1,6 +1,7 @@
+use std::cell::OnceCell;
 use std::rc::Rc;
 use macroquad::color::{Color, BLACK};
-use macroquad::input::{is_key_pressed, KeyCode};
+use macroquad::input::{is_key_pressed, is_mouse_button_pressed, KeyCode, MouseButton};
 use nalgebra::Vector2;
 use crate::chess::chess_game::ChessGame;
 use crate::chess::chess_pieces::chess_piece::ChessColor;
@@ -10,12 +11,15 @@ use crate::widget::Alignment::Center;
 use crate::widget::WidgetVector;
 
 pub struct WinnerScene{
+    ///used, so that i can wait for a bit of delay after the scene is created to detect input
+    time_since_start: OnceCell<f64>,
     winner_color: ChessColor,
     scene_data: SceneData
 }
 impl WinnerScene{
     pub fn new(winner_color: ChessColor)->Self{
         WinnerScene{
+            time_since_start: OnceCell::new(),
             winner_color,
             scene_data: SceneData::new()
         }
@@ -23,16 +27,19 @@ impl WinnerScene{
 }
 impl Scene for WinnerScene{
     fn init(self: Rc<Self>) {
+        self.time_since_start.set(macroquad::time::get_time()).unwrap();
         let new_text_widget = add_widget(self.clone(),
         TextWidget::new(WidgetVector{
             offset: Vector2::new(0.0,0.0),
             alignment: Center
         },40.0,
         BLACK,
-         format!("{} won!\nPress R to play again",self.winner_color.to_string())));
+         format!("{} won!\nTap on screen to play again!",self.winner_color.to_string())));
     }
     fn update(self: Rc<Self>) {
-        if is_key_pressed(KeyCode::R){
+
+        if is_mouse_button_pressed(MouseButton::Left) && macroquad::time::get_time() -
+            self.time_since_start.get().unwrap() > 0.3{
             self.get_game().change_scene(Rc::new(ChessGame::new()))
         }
     }

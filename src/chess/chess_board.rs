@@ -109,6 +109,7 @@ impl ChessBoard{
     pub fn get_slots(&self) -> &Vec<Rc<ChessSlot>>{
         &self.chess_slots
     }
+    /// gets the slot that is currently tapped on
     pub fn get_selected_slot(&self) -> Option<Rc<ChessSlot>> {
         self.selected_slot.borrow().clone().and_then(|s| s.upgrade())
     }
