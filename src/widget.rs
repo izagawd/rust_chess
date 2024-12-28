@@ -88,6 +88,7 @@ pub trait Widget : Any{
 
     fn get_parent(&self)->Option<Rc<dyn Widget>>;
 }
+
 default impl<T: 'static> Widget for T {
     fn as_chess_piece(self: Rc<Self>) -> Rc<dyn ChessPiece> {
         panic!()
