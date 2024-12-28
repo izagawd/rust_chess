@@ -11,7 +11,7 @@ use crate::widget::Alignment::Center;
 use crate::widget::WidgetVector;
 
 pub struct WinnerScene{
-    ///used, so that i can wait for a bit of delay after the scene is created to detect input
+    ///used, so that I can wait for a bit of delay after the scene is created to detect input
     time_since_start: OnceCell<f64>,
     winner_color: ChessColor,
     scene_data: SceneData
