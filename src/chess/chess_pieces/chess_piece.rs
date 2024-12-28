@@ -36,7 +36,7 @@ default impl<T: ChessPiece> Widget for T{
 
 pub struct MoveDirectionResult {
     pub collided_piece: Option<Rc<dyn ChessPiece>>,
-    pub possible_directions: Vec<Vector2<i32>>
+    pub possible_directions: Vec<Rc<ChessSlot>>
 }
 
 
@@ -52,7 +52,7 @@ pub fn recursing_direction(board: &Rc<ChessBoard>,  piece: &(impl ChessPiece + ?
         let mut curr_loc = gotten_pos.get_slot_position();
         let mut collided_piece = None;
         while let Some(gotten) = board.get_slots().iter().filter(|x| x.get_slot_position() == curr_loc + dir).last(){
-            vec_to_use.push(gotten.get_slot_position());
+            vec_to_use.push(gotten.clone());
             if let Some(collided) = gotten.get_piece_at_slot(){
                 collided_piece = Some(collided);
                 break;
@@ -94,5 +94,5 @@ pub trait ChessPiece : Widget {
 
 
     /// Returns the possible moves this piece can do based on the state of the game
-    fn possible_moves(&self,chess_board: &Rc<ChessBoard>) -> Vec<Vector2<i32>>;
+    fn possible_moves(&self, chess_board: &Rc<ChessBoard>) -> Vec<Rc<ChessSlot>>;
 }

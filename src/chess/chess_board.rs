@@ -36,6 +36,12 @@ impl Widget for ChessBoard {
 
 impl ChessBoard{
 
+    pub gen fn available_moves(self: Rc<Self>, piece: Rc<dyn ChessPiece>){
+        let original_slot = piece.get_slot().unwrap();
+        for i in piece.possible_moves(&self){
+
+        }
+    }
     pub gen fn king_is_checked(self: Rc<Self>,king: Rc<King>) -> Rc<dyn ChessPiece>{
         let king_loc = king.get_slot().unwrap().get_slot_position();
         let king_col = king.get_chess_color();
@@ -43,7 +49,7 @@ impl ChessBoard{
             .filter(|x| x.is_some())
             .map(|x| x.unwrap())
             .filter(move |x| x.get_chess_color() != king_col){
-            if i.possible_moves(&self).iter().any(|x| *x == king_loc){
+            if i.possible_moves(&self).iter().any(|x|x.get_slot_position() == king_loc){
                 yield i
             }
         }

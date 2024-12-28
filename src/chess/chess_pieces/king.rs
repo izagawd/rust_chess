@@ -7,6 +7,7 @@ use std::rc::Rc;
 use std::sync::LazyLock;
 use macroquad::prelude::ImageFormat::Png;
 use crate::chess::chess_pieces::chess_piece::{ChessColor, ChessPiece, ChessPieceData};
+use crate::chess::chess_slot::ChessSlot;
 use crate::widget::{Widget, WidgetData};
 
 pub struct King{
@@ -53,7 +54,7 @@ impl ChessPiece for King {
     fn chess_piece_data(&self) -> &ChessPieceData {
         &self.chess_piece_data
     }
-    fn possible_moves(&self, board: &Rc<ChessBoard>) -> Vec<Vector2<i32>> {
+    fn possible_moves(&self, chess_board: &Rc<ChessBoard>) -> Vec<Rc<ChessSlot>> {
         Vec::new()
     }
 }

@@ -8,6 +8,7 @@ use std::ops::Deref;
 use std::rc::Rc;
 use std::sync::LazyLock;
 use macroquad::prelude::ImageFormat::Png;
+use crate::chess::chess_slot::ChessSlot;
 
 pub struct Knight{
     data: ChessPieceData,
@@ -55,13 +56,12 @@ impl ChessPiece for Knight {
     fn chess_piece_data(&self) -> &ChessPieceData {
         &self.data
     }
-    fn possible_moves(&self, chess_board: &Rc<ChessBoard>) -> Vec<Vector2<i32>> {
+    fn possible_moves(&self, chess_board: &Rc<ChessBoard>) -> Vec<Rc<ChessSlot>> {
         if let Some(my_slot) = self.get_slot(){
             let my_slot_pos = my_slot.get_slot_position();
-            let collected = chess_board.get_slots().iter()
-                .map(|i| i.get_slot_position())
-                .filter(|slot_pos|{
-
+            let collected = chess_board.get_slots().clone().into_iter()
+                .filter(|x|{
+                let slot_pos = x.get_slot_position();
                 let mut za_bool = false;
                 for x in [1,-1]{
                     for y in [2,-2]{
@@ -80,7 +80,7 @@ impl ChessPiece for Knight {
                 }
                 return za_bool;
             })
-                .collect::<Vec<Vector2<i32>>>();
+                .collect::<Vec<Rc<ChessSlot>>>();
             collected
         }else{
             return vec![];

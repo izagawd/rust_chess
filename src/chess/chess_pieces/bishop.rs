@@ -7,6 +7,7 @@ use macroquad::prelude::ImageFormat::Png;
 use nalgebra::Vector2;
 use crate::chess::chess_board::ChessBoard;
 use crate::chess::chess_pieces::chess_piece::{recursing_direction, ChessColor, ChessPiece, ChessPieceData};
+use crate::chess::chess_slot::ChessSlot;
 use crate::widget::WidgetData;
 
 pub struct Bishop{
@@ -56,7 +57,7 @@ impl ChessPiece for Bishop {
     fn chess_piece_data(&self) -> &ChessPieceData {
         &self.data
     }
-    fn possible_moves(&self, chess_board: &Rc<ChessBoard>) -> Vec<Vector2<i32>> {
+    fn possible_moves(&self, chess_board: &Rc<ChessBoard>) -> Vec<Rc<ChessSlot>> {
         let mut right_up = recursing_direction(chess_board, self, Vector2::new(1, 1)).unwrap().possible_directions;
         let mut left_down = recursing_direction(chess_board, self, Vector2::new(-1, -1)).unwrap().possible_directions;
         let mut left_up = recursing_direction(chess_board, self, Vector2::new(-1, 1)).unwrap().possible_directions;

@@ -8,6 +8,7 @@ use std::cell::RefCell;
 use std::ops::Deref;
 use std::rc::Rc;
 use std::sync::LazyLock;
+use crate::chess::chess_slot::ChessSlot;
 
 pub struct Pawn{
     widget_data: WidgetData,
@@ -53,8 +54,8 @@ impl ChessPiece for Pawn {
     fn chess_piece_data(&self) -> &ChessPieceData {
         &self.chess_piece_data
     }
-    fn possible_moves(&self, board: &Rc<ChessBoard>) -> Vec<Vector2<i32>> {
-        let mut positions = Vec::new();
+    fn possible_moves(&self, chess_board: &Rc<ChessBoard>) -> Vec<Rc<ChessSlot>> {
+        let mut slots = Vec::new();
         let my_slot_pos = self.get_slot().unwrap().get_slot_position();
 
         // used to determine whether the pawn can move forward or backward depending on it's color
@@ -65,36 +66,36 @@ impl ChessPiece for Pawn {
 
         let top_left =Vector2::new(my_slot_pos.x -1 , my_slot_pos.y + y_incr);
         let top_right =Vector2::new(my_slot_pos.x + 1 , my_slot_pos.y + y_incr);
-        let position_at_top_left = board.get_slots().iter().filter(|x| x.get_slot_position()
+        let position_at_top_left = chess_board.get_slots().iter().filter(|x| x.get_slot_position()
         == top_left).last();
-        let position_at_top_right = board.get_slots().iter().filter(|x| x.get_slot_position()
+        let position_at_top_right = chess_board.get_slots().iter().filter(|x| x.get_slot_position()
             == top_right).last();
 
         if let Some(position) = position_at_top_left && position.get_piece_at_slot().is_some() {
-            positions.push(top_left);
+            slots.push(position.clone());
         }
         if let Some(position) = position_at_top_right && position.get_piece_at_slot().is_some() {
-            positions.push(top_right);
+            slots.push(position.clone());
         }
         let forward =Vector2::new(my_slot_pos.x , my_slot_pos.y + y_incr);
-        let position_forward = board.get_slots().iter().filter(|x| x.get_slot_position()
+        let position_forward = chess_board.get_slots().iter().filter(|x| x.get_slot_position()
             == forward).last();
         if let Some(position) = position_forward && !position.get_piece_at_slot().is_some() {
-            positions.push(forward);
+            slots.push(position.clone());
         } else {
-            return positions;
+            return slots;
         }
         // returning here to stop pawn from being able to move forward twice if pawn is not
         // in it's starting position
         if my_slot_pos.y != 1 && my_slot_pos.y != 6{
-            return positions;
+            return slots;
         }
         let double_forward =Vector2::new(my_slot_pos.x , my_slot_pos.y + (y_incr *2));
-        let position_double_forward =board.get_slots().iter().filter(|x| x.get_slot_position()
+        let position_double_forward = chess_board.get_slots().iter().filter(|x| x.get_slot_position()
             == double_forward).last();
         if let Some(position) = position_double_forward && !position.get_piece_at_slot().is_some() {
-            positions.push(double_forward);
+            slots.push(position.clone());
         }
-        positions
+        slots
     }
 }
