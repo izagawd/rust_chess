@@ -10,13 +10,13 @@ use crate::widget::Widget;
 pub trait Scene{
     /// Gets the game the scene resides in
     fn get_game(&self) -> Rc<Game>{
-        self.scene_data().game.borrow().as_ref().and_then(|x| x.upgrade())
+        self.scene_data().borrow().game.as_ref().and_then(|x| x.upgrade())
             .unwrap()
     }
 
     /// Gets the widgets contained in the scene
     fn get_widgets(&self) -> Ref<Vec<Rc<dyn Widget>>>{
-        self.scene_data().widgets. borrow()
+        Ref::map(self.scene_data().borrow(),|x| &x.widgets)
     }
     fn background_color(&self) -> macroquad::color::Color{
         RED
@@ -25,7 +25,7 @@ pub trait Scene{
 
 
     /// The data all scenes must have
-    fn scene_data(&self) -> &SceneData;
+    fn scene_data(&self) -> &RefCell<SceneData>;
 
 
     /// Called just before render
@@ -41,21 +41,21 @@ pub trait Scene{
 pub fn add_widget<T: Widget + 'static>(scene: Rc<dyn Scene>, widget: T) -> Rc<T>{
 
     let created = Rc::new(widget);
-    scene.scene_data().widgets.borrow_mut().push(created.clone());
+    scene.scene_data().borrow_mut().widgets.push(created.clone());
     created.widget_data().borrow_mut().scene = Some(Rc::downgrade(&scene));
     created
 }
 pub fn remove_widget(scene:Rc<dyn Scene>, widget: Rc<dyn Widget>) {
     widget.clone().set_parent(None).unwrap();
-    let pos = scene.scene_data().widgets.borrow().iter().position(|x| Rc::ptr_eq(x, &widget)).unwrap();
-    scene.scene_data().widgets.borrow_mut().remove(pos);
+    let pos = scene.scene_data().borrow().widgets.iter().position(|x| Rc::ptr_eq(x, &widget)).unwrap();
+    scene.scene_data().borrow_mut().widgets.remove(pos);
 
 }
 
 #[derive(Default)]
 pub struct SceneData{
-    widgets: RefCell<Vec<Rc<dyn Widget>>>,
-    pub(crate) game: RefCell<Option<Weak<Game>>>
+    widgets: Vec<Rc<dyn Widget>>,
+    pub(crate) game: Option<Weak<Game>>
 }
 
 impl SceneData{
@@ -75,7 +75,7 @@ fn recursive_render(gotten: &dyn Widget){
 default impl<T> Scene for T{
     fn render(&self){
         clear_background(self.background_color());
-        for i in self.scene_data().widgets.borrow().iter()
+        for i in self.scene_data().borrow().widgets.iter()
         {
             recursive_render(i.deref());
         }

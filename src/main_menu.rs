@@ -7,7 +7,7 @@ use crate::widget::{Widget, WidgetVector};
 use macroquad::color::{BLUE, RED, WHITE};
 use macroquad::input::{is_mouse_button_down, MouseButton};
 use nalgebra::Vector2;
-use std::cell::OnceCell;
+use std::cell::{OnceCell, RefCell};
 use std::rc::{Rc, Weak};
 
 /**
@@ -15,12 +15,12 @@ use std::rc::{Rc, Weak};
 */
 pub struct MainMenu {
     play_button_widget: OnceCell<Weak<RectangleWidget>>,
-    scene_data: SceneData
+    scene_data: RefCell<SceneData>
 }
 
 impl MainMenu {
     pub fn new() -> Rc<MainMenu> {
-      Rc::new(MainMenu { scene_data: SceneData::new(), play_button_widget: OnceCell::new() })
+      Rc::new(MainMenu { scene_data:RefCell::new(SceneData::new()), play_button_widget: OnceCell::new() })
     }
 }
 
@@ -62,7 +62,7 @@ impl Scene for MainMenu {
 
 
     }
-    fn scene_data(&self) -> &SceneData {
+    fn scene_data(&self) -> &RefCell<SceneData> {
         &self.scene_data
     }
 }

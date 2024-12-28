@@ -21,8 +21,6 @@ pub struct ChessBoard{
     widget_data: RefCell<WidgetData>
 }
 impl Widget for ChessBoard {
-
-
     fn size(&self) -> Vector2<f32> {
         let size = self.chess_slots.len().isqrt() as f32 * chess_slot::SLOT_SIZE as f32;
         Vector2::new(size, size)
@@ -30,7 +28,6 @@ impl Widget for ChessBoard {
     fn widget_data(&self) -> &RefCell<WidgetData> {
         &self.widget_data
     }
-
     fn render(&self){
 
     }

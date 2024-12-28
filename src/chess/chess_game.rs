@@ -1,3 +1,4 @@
+use std::cell::RefCell;
 use std::rc::Rc;
 use nalgebra::Vector2;
 use crate::chess::chess_board::ChessBoard;
@@ -6,14 +7,14 @@ use crate::widget::{Widget, WidgetVector};
 use crate::widget::Alignment::Center;
 
 pub struct ChessGame {
-    scene_data: SceneData,
+    scene_data: RefCell<SceneData>,
 
 }
 
 impl ChessGame {
     pub fn new() -> ChessGame {
         Self{
-            scene_data: SceneData::new(),
+            scene_data: RefCell::new(SceneData::new()),
         }
     }
 }
@@ -25,7 +26,7 @@ impl Scene for ChessGame {
             offset: Vector2::new(0.0,0.0)
         })
     }
-    fn scene_data(&self) -> &SceneData {
+    fn scene_data(&self) -> &RefCell<SceneData> {
         &self.scene_data
     }
 }
