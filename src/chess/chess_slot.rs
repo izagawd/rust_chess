@@ -1,6 +1,6 @@
 use crate::chess::chess_board::ChessBoard;
 use crate::chess::chess_pieces::chess_piece::ChessPiece;
-use crate::rectangle_widget::RectangleWidget;
+use crate::rectangle_widget::{ColorHandler, RectangleWidget};
 use crate::scene::remove_widget;
 use crate::widget::Alignment::{Center, Normal};
 use crate::widget::{Widget, WidgetData, WidgetVector};
@@ -12,6 +12,8 @@ use std::cell::RefCell;
 use std::ops::Deref;
 use std::ptr;
 use std::rc::{Rc, Weak};
+use macroquad::ui::KeyCode::V;
+use crate::rectangle_widget::ColorHandler::Value;
 
 pub struct ChessSlot{
     original_color: Color,
@@ -51,28 +53,30 @@ impl ChessSlot{
     }
 }
 
-impl ChessSlot{
-    fn handle_color(&self) {
-        if let Some(gotten)  =self.board.borrow().upgrade(){
-            if let Some(gotten_slot) = gotten.get_selected_slot(){
-                if ptr::eq(self,gotten_slot.deref()){
-                    self.rectangle.color.set(GREEN);
-                    return;
-                }
-            }
-        }
-        self.rectangle.color.set(self.original_color);
-    }
-}
+
 
 impl Widget for ChessSlot{
+    fn init(self: Rc<Self>) {
+        let cloned_weak_self =Rc::downgrade(&self);
+        let function_to_use = move ||{
+            let rcd_self =cloned_weak_self.upgrade().expect("this shouldnt happen");
+            if let Some(gotten)  =rcd_self.board.borrow().upgrade(){
+                if let Some(gotten_slot) = gotten.get_selected_slot(){
+                    if ptr::eq(rcd_self.deref(),gotten_slot.deref()){
+                        return GREEN
+                    }
+                }
+            }
+            return rcd_self.original_color;
+        };
+        self.rectangle.set_color(ColorHandler::Method(Box::new(function_to_use)));
+    }
     fn widget_data(&self) -> &WidgetData {
         self.rectangle.widget_data()
     }
 
     fn update(self: Rc<Self>) {
         let board= self.board.borrow().upgrade().unwrap();
-        self.handle_color();
         if self.is_hovered_on() && is_mouse_button_pressed(MouseButton::Left) &&
             let Some(piece) = self.get_piece_at_slot()
             && piece.get_chess_color() == self.board.borrow().upgrade().unwrap().turn_taker.get(){
@@ -111,7 +115,7 @@ impl ChessSlot{
                 (position.y * SLOT_SIZE) as f32
             ),
             alignment:  Normal}, Vector2::new(SLOT_SIZE as f32, SLOT_SIZE as f32),
-                                            color)
+                                            Value(color))
         }
     }
 }

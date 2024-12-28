@@ -1,5 +1,5 @@
 use crate::chess::chess_game::ChessGame;
-use crate::rectangle_widget::RectangleWidget;
+use crate::rectangle_widget::{ColorHandler, RectangleWidget};
 use crate::scene::{add_widget, Scene, SceneData};
 use crate::text_widget::TextWidget;
 use crate::widget::Alignment::Center;
@@ -40,14 +40,14 @@ impl Scene for MainMenu {
         let rectangle = add_widget(self.clone(), RectangleWidget::new(WidgetVector {
             alignment: Center,
             offset: Vector2::new(0.0, 0.0),
-        },Vector2::new(500.0,500.0),BLUE));
+        },Vector2::new(500.0,500.0),ColorHandler::Value(BLUE)));
 
 
         // creating the play button
         let play_button = add_widget(self.clone(), RectangleWidget::new(WidgetVector {
             alignment: Center,
             offset: Vector2::new(0.0, 0.0),
-        },Vector2::new(300.0,60.0),RED));
+        },Vector2::new(300.0,60.0),ColorHandler::Value(RED)));
 
         // creating the play button text
         let play_text = add_widget(self.clone(), TextWidget::new(WidgetVector {

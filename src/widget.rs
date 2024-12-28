@@ -50,6 +50,7 @@ impl WidgetData{
 
 /// A widget is any object that is in a scene that can be rendered
 pub trait Widget : Any{
+    fn init(self: Rc<Self>) {}
 
     /// Gets the scene the widget resides in
     fn get_scene(&self) -> Rc<dyn Scene>{

@@ -43,6 +43,7 @@ pub fn add_widget<T: Widget + 'static>(scene: Rc<dyn Scene>, widget: T) -> Rc<T>
     let created = Rc::new(widget);
     scene.scene_data().widgets.borrow_mut().push(created.clone());
     created.widget_data().widget_data_inner.borrow_mut().scene = Some(Rc::downgrade(&scene));
+    created.clone().init();
     created
 }
 pub fn remove_widget(scene:Rc<dyn Scene>, widget: Rc<dyn Widget>) {
