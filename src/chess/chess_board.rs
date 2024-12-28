@@ -125,7 +125,7 @@ impl ChessBoard{
         created.chess_slots = vecs_of_chess;
         let created = add_widget(current_scene.clone()  ,created);
         for i in created.chess_slots.iter(){
-            *i.board.borrow_mut() = Rc::downgrade(&created);
+            i.board.set(Rc::downgrade(&created)).unwrap();
         }
         for i in created.chess_slots.iter(){
             i.clone().set_parent(Some(created.clone())).unwrap();

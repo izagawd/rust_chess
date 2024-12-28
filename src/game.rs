@@ -24,14 +24,14 @@ impl Game{
     }
     pub fn new(scene: Rc<dyn Scene>) -> Rc<Self>{
        let made =Rc::new(Self{scene:RefCell::new(scene.clone())});
-        *made.scene.borrow().scene_data().game.borrow_mut() = Some(Rc::downgrade(&made));
+        made.scene.borrow().scene_data().game.set(Rc::downgrade(&made)).unwrap();
         scene.init();
         made
     }
     /// Changes the scene
     pub fn change_scene(self: Rc<Self>, scene:Rc<dyn Scene>){
         *self.scene.borrow_mut() = scene.clone();
-        *scene.scene_data().game.borrow_mut() = Some(Rc::downgrade(&self));
+        scene.scene_data().game.set(Rc::downgrade(&self)).unwrap();
         scene.init();
     }
 }

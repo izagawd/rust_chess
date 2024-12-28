@@ -1,6 +1,6 @@
 use macroquad::color::RED;
 use macroquad::prelude::clear_background;
-use std::cell::{Ref, RefCell};
+use std::cell::{OnceCell, Ref, RefCell};
 use std::ops::Deref;
 use std::rc::{Rc, Weak};
 
@@ -10,7 +10,7 @@ use crate::widget::Widget;
 pub trait Scene{
     /// Gets the game the scene resides in
     fn get_game(&self) -> Rc<Game>{
-        self.scene_data().game.borrow().as_ref().and_then(|x| x.upgrade())
+        self.scene_data().game.get().as_ref().and_then(|x| x.upgrade())
             .unwrap()
     }
 
@@ -56,7 +56,7 @@ pub fn remove_widget(scene:Rc<dyn Scene>, widget: Rc<dyn Widget>) {
 #[derive(Default)]
 pub struct SceneData{
     widgets: RefCell<Vec<Rc<dyn Widget>>>,
-    pub(crate) game: RefCell<Option<Weak<Game>>>
+    pub(crate) game: OnceCell<Weak<Game>>
 }
 
 impl SceneData{

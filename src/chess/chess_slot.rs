@@ -9,7 +9,7 @@ use macroquad::color::{BLUE, DARKGRAY, GREEN, LIGHTGRAY, PURPLE, RED, YELLOW};
 use macroquad::input::MouseButton;
 use macroquad::prelude::{is_mouse_button_pressed, Color};
 use nalgebra::Vector2;
-use std::cell::RefCell;
+use std::cell::{OnceCell, RefCell};
 use std::ops::Deref;
 use std::ptr;
 use std::rc::{Rc, Weak};
@@ -21,7 +21,7 @@ use crate::winner_scene::WinnerScene;
 
 pub struct ChessSlot{
     original_color: Color,
-    pub(crate) board: RefCell<Weak<ChessBoard>>,
+    pub(crate) board: OnceCell<Weak<ChessBoard>>,
     rectangle: RectangleWidget,
     position: Vector2<i32>,
 }
@@ -29,7 +29,7 @@ pub struct ChessSlot{
 
 impl ChessSlot{
     pub fn get_chess_board(&self) -> Rc<ChessBoard>{
-        self.board.borrow().upgrade().unwrap()
+        self.board.get().unwrap(). upgrade().unwrap()
     }
     pub fn get_slot_position(&self) -> Vector2<i32>{
         self.position
@@ -72,7 +72,7 @@ impl Widget for ChessSlot{
         let cloned_weak_self =Rc::downgrade(&self);
         let function_to_use = move ||{
             let rcd_self =cloned_weak_self.upgrade().expect("this shouldnt happen");
-            let board = rcd_self.board.borrow().upgrade().expect("this shouldnt happen");
+            let board = rcd_self.board.get().unwrap().upgrade().expect("this shouldnt happen");
 
 
 
@@ -125,7 +125,7 @@ impl Widget for ChessSlot{
     }
 
     fn update(self: Rc<Self>) {
-        let board= self.board.borrow().upgrade().unwrap();
+        let board= self.board.get().unwrap().upgrade().unwrap();
         if self.is_hovered_on() && is_mouse_button_pressed(MouseButton::Left) &&
             let Some(piece) = self.get_piece_at_slot()
             && piece.get_chess_color() == board.turn_taker.get(){
@@ -161,7 +161,7 @@ impl ChessSlot{
         let color =if (position.x + position.y) % 2 == 0{ DARKGRAY} else{ LIGHTGRAY };
         Self{
             original_color: color,
-            board: RefCell::new(Weak::new()),
+            board: OnceCell::new(),
             position,
             rectangle: RectangleWidget::new(WidgetVector{
                  offset: Vector2::new(
