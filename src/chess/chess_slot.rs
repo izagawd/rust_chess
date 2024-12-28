@@ -2,10 +2,10 @@ use std::any::Any;
 use crate::chess::chess_board::ChessBoard;
 use crate::chess::chess_pieces::chess_piece::ChessPiece;
 use crate::rectangle_widget::{ColorHandler, RectangleWidget};
-use crate::scene::remove_widget;
+use crate::scene::{remove_widget, Scene};
 use crate::widget::Alignment::{Center, Normal};
 use crate::widget::{Widget, WidgetData, WidgetVector};
-use macroquad::color::{DARKGRAY, GREEN, LIGHTGRAY, RED, YELLOW};
+use macroquad::color::{BLUE, DARKGRAY, GREEN, LIGHTGRAY, PURPLE, RED, YELLOW};
 use macroquad::input::MouseButton;
 use macroquad::prelude::{is_mouse_button_pressed, Color};
 use nalgebra::Vector2;
@@ -16,6 +16,7 @@ use std::rc::{Rc, Weak};
 use macroquad::ui::KeyCode::V;
 use crate::chess::chess_pieces::king::King;
 use crate::rectangle_widget::ColorHandler::Value;
+use crate::winner_scene::WinnerScene;
 
 pub struct ChessSlot{
     original_color: Color,
@@ -71,6 +72,18 @@ impl Widget for ChessSlot{
         let function_to_use = move ||{
             let rcd_self =cloned_weak_self.upgrade().expect("this shouldnt happen");
             let board = rcd_self.board.borrow().upgrade().expect("this shouldnt happen");
+
+            {
+                if let Some(selected_slot)  = board.selected_slot.borrow().as_ref().and_then(|x| x.upgrade()){
+                    if let Some(selected_piece) = selected_slot.get_piece_at_slot(){
+                        if board.selected_piece_available_moves_cache.borrow().iter()
+                            .any(|x| x.get_slot_position() ==rcd_self.get_slot_position()){
+                            return BLUE;
+                        }
+                    }
+                }
+            }
+
             if let Some(gotten_slot) = board.get_selected_slot(){
 
                 if ptr::eq(rcd_self.deref(),gotten_slot.deref()){
@@ -117,18 +130,19 @@ impl Widget for ChessSlot{
             let Some(piece) = self.get_piece_at_slot()
             && piece.get_chess_color() == board.turn_taker.get(){
             *board.selected_slot.borrow_mut()
-            =Some(Rc::downgrade(&self))
+            =Some(Rc::downgrade(&self));
+            *board.selected_piece_available_moves_cache.borrow_mut() = board.clone().available_moves_for_piece(piece.clone());
         } else if self.is_hovered_on() && is_mouse_button_pressed(MouseButton::Left) {
             let to_unwrap_slot = board.selected_slot.borrow().clone().and_then(|x| x.upgrade());
             if let Some(unwrapped_slot) = to_unwrap_slot
                 && let piece = unwrapped_slot.get_piece_at_slot().unwrap() &&
                     board.clone().available_moves_for_piece(piece.clone()).into_iter().any(|p| p.get_slot_position() == self.position){
-                    self.set_piece_at_slot(Some(piece));
+                    self.clone().set_piece_at_slot(Some(piece));
                     board.turn_taker.set(board.turn_taker.get().get_opposite());
                     *board.selected_slot.borrow_mut() =None;
                 let is_other_team_checkmated =  board.clone().king_is_checkmated(board.turn_taker.get());
                 if is_other_team_checkmated {
-                    panic!("YAYYYY")
+                    self.get_scene().get_game().change_scene(Rc::new(WinnerScene::new(board.turn_taker.get().get_opposite())));
                 }
             }
         }

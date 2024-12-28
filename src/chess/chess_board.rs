@@ -17,6 +17,7 @@ use crate::scene::{add_widget, Scene};
 use crate::widget::{Widget, WidgetData};
 
 pub struct ChessBoard{
+    pub selected_piece_available_moves_cache: RefCell<Vec<Rc<ChessSlot>>>,
     pub turn_taker: Cell<ChessColor>,
     pub selected_slot: RefCell<Option<Weak<ChessSlot>>>,
     chess_slots: Vec<Rc<ChessSlot>>,
@@ -112,7 +113,7 @@ impl ChessBoard{
         self.selected_slot.borrow().clone().and_then(|s| s.upgrade())
     }
     pub fn new(current_scene: Rc<dyn Scene>) -> Rc<ChessBoard>{
-       let mut created = ChessBoard{turn_taker: Cell::new(White), selected_slot: RefCell::new(None), chess_slots: Vec::new(), widget_data: WidgetData::new()};
+       let mut created = ChessBoard{ selected_piece_available_moves_cache: Default::default(), turn_taker: Cell::new(White), selected_slot: RefCell::new(None), chess_slots: Vec::new(), widget_data: WidgetData::new()};
 
         let mut vecs_of_chess : Vec<Rc<ChessSlot>> =  Vec::new();
         for i in 0..8{

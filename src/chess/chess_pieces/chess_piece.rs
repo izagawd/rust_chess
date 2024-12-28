@@ -1,3 +1,4 @@
+use std::fmt::{Debug, Display, Formatter};
 use crate::chess::chess_board::ChessBoard;
 use crate::chess::chess_slot::ChessSlot;
 use crate::widget::Widget;
@@ -7,9 +8,15 @@ use macroquad::prelude::{draw_texture_ex, DrawTextureParams, Texture2D};
 use nalgebra::Vector2;
 use std::rc::Rc;
 
-#[derive(Clone, Copy, Eq, PartialEq)]
+
+#[derive(Clone, Copy, Eq, PartialEq, Debug)]
 pub enum ChessColor{
     Black,White
+}
+impl Display for ChessColor {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        Debug::fmt(&self, f)
+    }
 }
 impl ChessColor {
     pub fn get_opposite(self) -> Self{

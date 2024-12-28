@@ -15,7 +15,7 @@ mod scene;
 mod main_menu;
 mod rectangle_widget;
 mod text_widget;
-
+mod winner_scene;
 
 mod chess{
     pub mod chess_pieces{
