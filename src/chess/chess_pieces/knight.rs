@@ -11,14 +11,14 @@ use macroquad::prelude::ImageFormat::Png;
 
 pub struct Knight{
     data: ChessPieceData,
-    widget_data: RefCell<WidgetData>,
+    widget_data: WidgetData,
 }
 
 impl Knight{
     pub fn new(color: ChessColor) -> Knight{
         Self{
             data: ChessPieceData::new(color),
-            widget_data: RefCell::new(WidgetData::new())
+            widget_data: WidgetData::new()
         }
     }
 }
@@ -36,7 +36,7 @@ static WHITE_KNIGHT_IMAGE: LazyLock<Texture2D> = LazyLock::new(|| {
                                      Some(Png))
 });
 impl crate::widget::Widget for Knight {
-    fn widget_data(&self) -> &RefCell<WidgetData> {
+    fn widget_data(&self) -> &WidgetData {
         &self.widget_data
     }
     fn render(&self) {

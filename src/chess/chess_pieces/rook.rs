@@ -11,14 +11,14 @@ use macroquad::prelude::ImageFormat::Png;
 
 pub struct Rook{
     data: ChessPieceData,
-    widget_data: RefCell<WidgetData>,
+    widget_data: WidgetData,
 }
 
 impl Rook{
     pub fn new(color: ChessColor) -> Rook{
         Self{
             data: ChessPieceData::new(color),
-            widget_data: RefCell::new(WidgetData::new())
+            widget_data: WidgetData::new()
         }
     }
 }
@@ -36,7 +36,7 @@ static WHITE_ROOK_IMAGE: LazyLock<Texture2D> = LazyLock::new(|| {
 
 });
 impl Widget for Rook {
-    fn widget_data(&self) -> &RefCell<WidgetData> {
+    fn widget_data(&self) -> &WidgetData {
         &self.widget_data
     }
     fn render(&self) {

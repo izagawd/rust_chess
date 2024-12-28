@@ -11,14 +11,14 @@ use crate::widget::WidgetData;
 
 pub struct Bishop{
     data: ChessPieceData,
-    widget_data: RefCell<WidgetData>,
+    widget_data: WidgetData,
 }
 
 impl Bishop{
     pub fn new(color: ChessColor) -> Bishop{
         Self{
             data: ChessPieceData::new(color),
-            widget_data: RefCell::new(WidgetData::new())
+            widget_data: WidgetData::new()
         }
     }
 }
@@ -37,7 +37,7 @@ static WHITE_BISHOP_IMAGE: LazyLock<Texture2D> = LazyLock::new(|| {
 
 });
 impl crate::widget::Widget for Bishop {
-    fn widget_data(&self) -> &RefCell<WidgetData> {
+    fn widget_data(&self) -> &WidgetData {
         &self.widget_data
     }
     fn render(&self) {

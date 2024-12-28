@@ -66,7 +66,7 @@ impl ChessSlot{
 }
 
 impl Widget for ChessSlot{
-    fn widget_data(&self) -> &RefCell<WidgetData> {
+    fn widget_data(&self) -> &WidgetData {
         self.rectangle.widget_data()
     }
 

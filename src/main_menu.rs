@@ -15,12 +15,12 @@ use std::rc::{Rc, Weak};
 */
 pub struct MainMenu {
     play_button_widget: OnceCell<Weak<RectangleWidget>>,
-    scene_data: RefCell<SceneData>
+    scene_data: SceneData
 }
 
 impl MainMenu {
     pub fn new() -> Rc<MainMenu> {
-      Rc::new(MainMenu { scene_data:RefCell::new(SceneData::new()), play_button_widget: OnceCell::new() })
+      Rc::new(MainMenu { scene_data:SceneData::new(), play_button_widget: OnceCell::new() })
     }
 }
 
@@ -62,7 +62,7 @@ impl Scene for MainMenu {
 
 
     }
-    fn scene_data(&self) -> &RefCell<SceneData> {
+    fn scene_data(&self) -> &SceneData {
         &self.scene_data
     }
 }

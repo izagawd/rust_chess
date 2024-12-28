@@ -24,7 +24,7 @@ impl Game{
     }
     pub fn new(scene: Rc<dyn Scene>) -> Rc<Self>{
        let made =Rc::new(Self{scene:RefCell::new(scene.clone())});
-        made.scene.borrow().scene_data().borrow_mut().game = Some(Rc::downgrade(&made));
+        *made.scene.borrow().scene_data().game.borrow_mut() = Some(Rc::downgrade(&made));
         scene.init();
         made
     }

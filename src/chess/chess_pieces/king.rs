@@ -10,7 +10,7 @@ use crate::chess::chess_pieces::chess_piece::{ChessColor, ChessPiece, ChessPiece
 use crate::widget::{Widget, WidgetData};
 
 pub struct King{
-    widget_data: RefCell<WidgetData>,
+    widget_data: WidgetData,
     chess_piece_data: ChessPieceData
 }
 
@@ -23,7 +23,7 @@ impl Widget for King {
             self.render_texture(WHITE_King_IMAGE.deref())
         }
     }
-    fn widget_data(&self) -> &RefCell<WidgetData> {
+    fn widget_data(&self) -> &WidgetData {
         &self.widget_data
     }
 }
@@ -44,7 +44,7 @@ static WHITE_King_IMAGE: LazyLock<Texture2D> = LazyLock::new(|| {
 impl King{
     pub fn new(chess_color: ChessColor) -> Self{
         Self{
-            widget_data: RefCell::new(WidgetData::new()),
+            widget_data: WidgetData::new(),
             chess_piece_data: ChessPieceData::new(chess_color)
         }
     }

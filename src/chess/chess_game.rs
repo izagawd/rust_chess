@@ -7,14 +7,14 @@ use crate::widget::{Widget, WidgetVector};
 use crate::widget::Alignment::Center;
 
 pub struct ChessGame {
-    scene_data: RefCell<SceneData>,
+    scene_data: SceneData,
 
 }
 
 impl ChessGame {
     pub fn new() -> ChessGame {
         Self{
-            scene_data: RefCell::new(SceneData::new()),
+            scene_data: SceneData::new(),
         }
     }
 }
@@ -26,7 +26,7 @@ impl Scene for ChessGame {
             offset: Vector2::new(0.0,0.0)
         })
     }
-    fn scene_data(&self) -> &RefCell<SceneData> {
+    fn scene_data(&self) -> &SceneData {
         &self.scene_data
     }
 }

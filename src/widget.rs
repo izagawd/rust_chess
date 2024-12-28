@@ -41,7 +41,7 @@ pub struct WidgetData{
     children: RefCell<Vec<Rc<dyn Widget>>>
 }
 impl WidgetData{
-    fn new() -> Self{
+    pub fn new() -> Self{
         Self::default()
     }
 }
