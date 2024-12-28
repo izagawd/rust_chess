@@ -1,3 +1,4 @@
+use std::cell::RefCell;
 use crate::chess::chess_board::ChessBoard;
 use crate::chess::chess_pieces::chess_piece::{recursing_direction, ChessColor, ChessPiece, ChessPieceData};
 use crate::widget::{Widget, WidgetData};
@@ -10,14 +11,14 @@ use macroquad::prelude::ImageFormat::Png;
 
 pub struct Rook{
     data: ChessPieceData,
-    widget_data: WidgetData,
+    widget_data: RefCell<WidgetData>,
 }
 
 impl Rook{
     pub fn new(color: ChessColor) -> Rook{
         Self{
             data: ChessPieceData::new(color),
-            widget_data: WidgetData::default()
+            widget_data: RefCell::new(WidgetData::new())
         }
     }
 }
@@ -35,7 +36,7 @@ static WHITE_ROOK_IMAGE: LazyLock<Texture2D> = LazyLock::new(|| {
 
 });
 impl Widget for Rook {
-    fn widget_data(&self) -> &WidgetData{
+    fn widget_data(&self) -> &RefCell<WidgetData> {
         &self.widget_data
     }
     fn render(&self) {
@@ -55,10 +56,10 @@ impl ChessPiece for Rook {
         &self.data
     }
     fn possible_moves(&self, chess_board: &Rc<ChessBoard>) -> Vec<Vector2<i32>> {
-        let mut forward = recursing_direction(chess_board,self,Vector2::new(0,1)).unwrap().possible_positions;
-        let mut backward = recursing_direction(chess_board,self,Vector2::new(0,-1)).unwrap().possible_positions;
-        let mut left = recursing_direction(chess_board,self,Vector2::new(-1,0)).unwrap().possible_positions;
-        let mut right = recursing_direction(chess_board,self,Vector2::new(1,0)).unwrap().possible_positions;
+        let mut forward = recursing_direction(chess_board,self,Vector2::new(0,1)).unwrap().possible_directions;
+        let mut backward = recursing_direction(chess_board,self,Vector2::new(0,-1)).unwrap().possible_directions;
+        let mut left = recursing_direction(chess_board,self,Vector2::new(-1,0)).unwrap().possible_directions;
+        let mut right = recursing_direction(chess_board,self,Vector2::new(1,0)).unwrap().possible_directions;
         forward.append(&mut backward);
         forward.append(&mut left);
         forward.append(&mut right);
