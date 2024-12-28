@@ -6,7 +6,7 @@
 use crate::game::Game;
 use crate::main_menu::MainMenu;
 use macroquad::prelude::*;
-
+use crate::widget::WidgetData;
 
 mod widget;
 mod game;
@@ -33,6 +33,7 @@ mod chess{
 
 #[macroquad::main("MyGame")]
 async fn main() {
+    println!("{}",size_of::<WidgetData>());
     let game = Game::new(MainMenu::new());
     loop {
         game.clone().update();

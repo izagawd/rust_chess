@@ -28,12 +28,16 @@ impl Default for WidgetVector{
     }
 }
 #[derive(Default)]
-pub struct WidgetData{
-    pub scene: RefCell<Option<Weak<dyn Scene>>>,
-    size: RefCell<Vector2<f32>>,
+pub struct WidgetDataInner{
+    pub scene: Option<Weak<dyn Scene>>,
+    size: Vector2<f32>,
 
-    widget_position: RefCell<WidgetVector>,
-    parent: RefCell<Option<Weak<dyn Widget>>>,
+    widget_position: WidgetVector,
+    parent: Option<Weak<dyn Widget>>,
+}
+#[derive(Default)]
+pub struct WidgetData{
+    pub widget_data_inner: RefCell<WidgetDataInner>,
     children: RefCell<Vec<Rc<dyn Widget>>>
 }
 impl WidgetData{
@@ -49,7 +53,7 @@ pub trait Widget : Any{
 
     /// Gets the scene the widget resides in
     fn get_scene(&self) -> Rc<dyn Scene>{
-        self.widget_data().scene.borrow().as_ref().unwrap().upgrade().unwrap()
+        self.widget_data().widget_data_inner.borrow().scene.as_ref().unwrap().upgrade().unwrap()
     }
     /// Gets the widget as a chess piece. If it is not a chess piece an error is thrown
     fn as_chess_piece(self: Rc<Self>) -> Rc<dyn ChessPiece>;
@@ -93,16 +97,16 @@ default impl<T: 'static> Widget for T {
         panic!()
     }
     fn size(&self) -> Vector2<f32>{
-        self.widget_data().size.borrow().clone()
+        self.widget_data().widget_data_inner.borrow().size.clone()
     }
     fn set_local_position(&self, value: WidgetVector) {
-        *self.widget_data().widget_position.borrow_mut() = value;
+        self.widget_data().widget_data_inner.borrow_mut().widget_position = value;
     }
     fn local_position(&self) -> WidgetVector{
-        self.widget_data().widget_position.borrow().clone()
+        self.widget_data().widget_data_inner.borrow().widget_position.clone()
     }
     fn set_size(&self, value: Vector2<f32>){
-        *self.widget_data().size.borrow_mut() = value;
+        self.widget_data().widget_data_inner.borrow_mut().size= value;
     }
     fn global_position(&self) -> Vector2<f32>{
         let mut position_to_work_with = Vector2::new(0.0, 0.0);
@@ -115,7 +119,7 @@ default impl<T: 'static> Widget for T {
         } else{
             size_to_work_with = Vector2::new(screen_width(),screen_height());
         }
-        let widget_pos = self.widget_data().widget_position.borrow().clone();
+        let widget_pos = self.widget_data().widget_data_inner.borrow().widget_position.clone();
 
         match widget_pos.alignment {
             Alignment::Normal => {
@@ -138,8 +142,9 @@ default impl<T: 'static> Widget for T {
             }
         }
     }
+
     fn get_parent(&self)->Option<Rc<dyn Widget>>{
-        let kk =self.widget_data().parent.borrow().clone();
+        let kk =self.widget_data().widget_data_inner.borrow().parent.clone();
         if let Some(k) = kk {
             return k.upgrade();
         }
@@ -163,7 +168,10 @@ default impl<T: 'static> Widget for T {
                 |w| Rc::ptr_eq(&as_widget, &w)) {
                 return Ok(())
             }
-            let mut curr_parent = to_become_parent.widget_data().parent.borrow().clone();
+            let mut curr_parent = to_become_parent
+                .widget_data()
+                .widget_data_inner.borrow().parent.clone();
+
             while let Some(ref parent) = curr_parent {
                 if let Some(parent) = parent.upgrade() {
                     if Rc::ptr_eq(&as_widget, &parent) {
@@ -175,7 +183,7 @@ default impl<T: 'static> Widget for T {
                 }
             }
             to_become_parent.widget_data().children.borrow_mut().push(self.clone());
-            let prev_parent = self.widget_data().parent.borrow().clone().and_then(|x| x.upgrade());
+            let prev_parent = self.get_parent();
             if let Some(prev_parent) = prev_parent {
                 let index = prev_parent.widget_data().children.borrow().iter().position(|x|
                 Rc::ptr_eq(&as_widget,x));
@@ -185,24 +193,22 @@ default impl<T: 'static> Widget for T {
 
             }
 
-            *self.widget_data().parent.borrow_mut() = Some(Rc::downgrade(&to_become_parent));
+            self.widget_data().widget_data_inner.borrow_mut().parent = Some(Rc::downgrade(&to_become_parent));
             Ok(())
         } else{
-            let curr_parent = self.widget_data().parent.borrow().clone().and_then(|x| x.upgrade());
+            let curr_parent = self.get_parent();
 
             if let Some(true_one) = curr_parent {
 
                 let gotten = true_one.widget_data().children.borrow().iter()
                     .position(|x| Rc::ptr_eq(x,&as_widget));
                 if let Some(gotten_index)= gotten {
-
-                    println!("{}","yo");
                     true_one.widget_data().children.borrow_mut().remove(
                         gotten_index
                     );
                 }
             }
-            *self.widget_data().parent.borrow_mut() = None;
+            self.widget_data().widget_data_inner.borrow_mut().parent = None;
             return Ok(());
 
         }
