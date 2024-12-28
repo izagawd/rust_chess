@@ -22,6 +22,11 @@ impl ChessGame {
     }
 }
 impl Scene for ChessGame {
+    fn update(self: Rc<Self>) {
+        if is_key_down(KeyCode::R){
+            self.get_game().change_scene(Rc::new(ChessGame::new()));
+        }
+    }
     fn init(self: Rc<Self>) {
         let board = ChessBoard::new(self);
         board.set_local_position(WidgetVector{
