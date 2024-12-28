@@ -55,6 +55,18 @@ impl ChessPiece for King {
         &self.chess_piece_data
     }
     fn possible_moves(&self, chess_board: &Rc<ChessBoard>) -> Vec<Rc<ChessSlot>> {
-        Vec::new()
+        let my_slot_pos = self.get_slot().unwrap().get_slot_position();
+        let mut move_slots = Vec::new();
+        for x in [0,1,-1]{
+            for y in [0,1,-1]{
+                let gotten_slot =chess_board.get_slots()
+                    .iter()
+                    .find(|i| i.get_slot_position() == Vector2::new(my_slot_pos.x + x ,my_slot_pos.y + y));
+                if let Some(gotten_slot) = gotten_slot {
+                    move_slots.push(gotten_slot.clone());
+                }
+            }
+        }
+        move_slots
     }
 }
