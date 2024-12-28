@@ -34,7 +34,6 @@ mod chess{
 
 #[macroquad::main("Legendary Chess")]
 async fn main() {
-    println!("{}",size_of::<WidgetData>());
     let game = Game::new(MainMenu::new());
     loop {
         game.clone().update();
