@@ -1,6 +1,6 @@
 use std::cell::RefCell;
 use std::rc::Rc;
-use macroquad::input::KeyCode;
+use macroquad::input::{is_key_pressed, KeyCode};
 use macroquad::prelude::is_key_down;
 use nalgebra::Vector2;
 use crate::chess::chess_board::ChessBoard;
@@ -23,7 +23,7 @@ impl ChessGame {
 }
 impl Scene for ChessGame {
     fn update(self: Rc<Self>) {
-        if is_key_down(KeyCode::R){
+        if is_key_pressed(KeyCode::R){
             self.get_game().change_scene(Rc::new(ChessGame::new()));
         }
     }

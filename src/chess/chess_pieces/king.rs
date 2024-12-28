@@ -61,7 +61,10 @@ impl ChessPiece for King {
             for y in [0,1,-1]{
                 let gotten_slot =chess_board.get_slots()
                     .iter()
-                    .find(|i| i.get_slot_position() == Vector2::new(my_slot_pos.x + x ,my_slot_pos.y + y));
+
+                    .find(|i| i.get_slot_position() == Vector2::new(my_slot_pos.x + x ,my_slot_pos.y + y)
+
+                    && i.get_piece_at_slot().map(|x| x.get_chess_color() != self.get_chess_color()).unwrap_or(true));
                 if let Some(gotten_slot) = gotten_slot {
                     move_slots.push(gotten_slot.clone());
                 }

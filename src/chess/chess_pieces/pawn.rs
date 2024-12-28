@@ -71,10 +71,14 @@ impl ChessPiece for Pawn {
         let position_at_top_right = chess_board.get_slots().iter().filter(|x| x.get_slot_position()
             == top_right).last();
 
-        if let Some(position) = position_at_top_left && position.get_piece_at_slot().is_some() {
+        // checking for capturable pieces at top left
+        if let Some(position) = position_at_top_left && position.get_piece_at_slot().is_some()
+        && position.get_piece_at_slot().map(|x| x.get_chess_color() != self.get_chess_color()).unwrap_or(true){
             slots.push(position.clone());
         }
-        if let Some(position) = position_at_top_right && position.get_piece_at_slot().is_some() {
+        // checking for capturable pieces at top right
+        if let Some(position) = position_at_top_right && position.get_piece_at_slot().is_some()
+        && position.get_piece_at_slot().map(|x| x.get_chess_color() != self.get_chess_color()).unwrap_or(true){
             slots.push(position.clone());
         }
         let forward =Vector2::new(my_slot_pos.x , my_slot_pos.y + y_incr);

@@ -60,7 +60,11 @@ impl ChessPiece for Knight {
         if let Some(my_slot) = self.get_slot(){
             let my_slot_pos = my_slot.get_slot_position();
             let collected = chess_board.get_slots().clone().into_iter()
+
                 .filter(|x|{
+                if x.get_piece_at_slot().map(|x| x.get_chess_color() == self.get_chess_color()).unwrap_or(false){
+                    return false;
+                }
                 let slot_pos = x.get_slot_position();
                 let mut za_bool = false;
                 for x in [1,-1]{

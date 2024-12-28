@@ -37,12 +37,23 @@ impl Widget for ChessBoard {
 
 impl ChessBoard{
 
+    pub fn king_is_checkmated(self : Rc<Self>, color: ChessColor) -> bool {
+        for i in self.get_pieces().filter(|x| x.get_chess_color() == color){
+            if self.clone().available_moves_for_piece(i)
+                .into_iter()
+                .any(|x| true){
+                return false;
+            }
+        }
+        true
+    }
     pub  fn get_pieces(&self) -> impl Iterator<Item=Rc<dyn ChessPiece>>{
         self.chess_slots.iter().map(|x| x.get_piece_at_slot())
             .filter(|x| x.is_some())
             .map(|x| x.unwrap())
     }
-    pub fn available_moves(self: Rc<Self>, piece: Rc<dyn ChessPiece>) -> Vec<Rc<ChessSlot>>{
+    /// checks the available moves a piece has that won't get their king captured in the next turn
+    pub fn available_moves_for_piece(self: Rc<Self>, piece: Rc<dyn ChessPiece>) -> Vec<Rc<ChessSlot>>{
         let original_slot = piece.get_slot().unwrap();
         let piece_color = piece.get_chess_color();
         let mut the_vec = Vec::new();

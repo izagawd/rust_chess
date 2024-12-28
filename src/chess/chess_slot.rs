@@ -122,11 +122,14 @@ impl Widget for ChessSlot{
             let to_unwrap_slot = board.selected_slot.borrow().clone().and_then(|x| x.upgrade());
             if let Some(unwrapped_slot) = to_unwrap_slot
                 && let piece = unwrapped_slot.get_piece_at_slot().unwrap() &&
-
-                    board.clone().available_moves(piece.clone()).into_iter().any(|p| p.get_slot_position() == self.position){
+                    board.clone().available_moves_for_piece(piece.clone()).into_iter().any(|p| p.get_slot_position() == self.position){
                     self.set_piece_at_slot(Some(piece));
                     board.turn_taker.set(board.turn_taker.get().get_opposite());
                     *board.selected_slot.borrow_mut() =None;
+                let is_other_team_checkmated =  board.clone().king_is_checkmated(board.turn_taker.get());
+                if is_other_team_checkmated {
+                    panic!("YAYYYY")
+                }
             }
         }
 

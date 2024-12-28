@@ -51,7 +51,8 @@ pub fn recursing_direction(board: &Rc<ChessBoard>,  piece: &(impl ChessPiece + ?
         let mut vec_to_use = Vec::new();
         let mut curr_loc = gotten_pos.get_slot_position();
         let mut collided_piece = None;
-        while let Some(gotten) = board.get_slots().iter().filter(|x| x.get_slot_position() == curr_loc + dir).last(){
+        while let Some(gotten) = board.get_slots().iter().filter(|x| x.get_slot_position() == curr_loc + dir
+         && x.get_piece_at_slot().map(|x| x.get_chess_color() != piece.get_chess_color()).unwrap_or(true)).last(){
             vec_to_use.push(gotten.clone());
             if let Some(collided) = gotten.get_piece_at_slot(){
                 collided_piece = Some(collided);
