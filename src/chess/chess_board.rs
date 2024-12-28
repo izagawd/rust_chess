@@ -37,6 +37,9 @@ impl Widget for ChessBoard {
 
 impl ChessBoard{
 
+
+
+    /// * `color` - The color of the king to check if checkmated
     pub fn king_is_checkmated(self : Rc<Self>, color: ChessColor) -> bool {
         for i in self.get_pieces().filter(|x| x.get_chess_color() == color){
             if self.clone().available_moves_for_piece(i)
