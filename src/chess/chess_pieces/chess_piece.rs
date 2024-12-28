@@ -7,13 +7,10 @@ use macroquad::prelude::{draw_texture_ex, DrawTextureParams, Texture2D};
 use nalgebra::Vector2;
 use std::rc::Rc;
 
-
-/// Simple representation of the black and white color for chess pieces
 #[derive(Clone, Copy, Eq, PartialEq)]
 pub enum ChessColor{
     Black,White
 }
-
 impl ChessColor {
     pub fn get_opposite(self) -> Self{
         match self {
@@ -37,13 +34,9 @@ default impl<T: ChessPiece> Widget for T{
     }
 }
 
-
-
 pub struct MoveDirectionResult {
-    /// the piece that stops it from continuing in it's direction, if there's any
     pub collided_piece: Option<Rc<dyn ChessPiece>>,
-    /// All possible positions one can move to based on the inputted direction
-    pub possible_positions: Vec<Vector2<i32>>
+    pub possible_directions: Vec<Vector2<i32>>
 }
 
 
@@ -67,12 +60,11 @@ pub fn recursing_direction(board: &Rc<ChessBoard>,  piece: &(impl ChessPiece + ?
             curr_loc += dir;
 
         }
-        return Ok(MoveDirectionResult {collided_piece, possible_positions: vec_to_use });
+        return Ok(MoveDirectionResult {collided_piece, possible_directions: vec_to_use });
     } else{
-        return Ok(MoveDirectionResult {collided_piece: None, possible_positions: Vec::new() });
+        return Ok(MoveDirectionResult {collided_piece: None, possible_directions: Vec::new() });
     }
 }
-/// Represents a chess piece in the game
 pub trait ChessPiece : Widget {
     /// Gets the current slot the chess piece is on
     fn get_slot(&self) -> Option<Rc<ChessSlot>>{

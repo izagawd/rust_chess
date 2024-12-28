@@ -56,10 +56,10 @@ impl ChessPiece for Rook {
         &self.data
     }
     fn possible_moves(&self, chess_board: &Rc<ChessBoard>) -> Vec<Vector2<i32>> {
-        let mut forward = recursing_direction(chess_board,self,Vector2::new(0,1)).unwrap().possible_positions;
-        let mut backward = recursing_direction(chess_board,self,Vector2::new(0,-1)).unwrap().possible_positions;
-        let mut left = recursing_direction(chess_board,self,Vector2::new(-1,0)).unwrap().possible_positions;
-        let mut right = recursing_direction(chess_board,self,Vector2::new(1,0)).unwrap().possible_positions;
+        let mut forward = recursing_direction(chess_board,self,Vector2::new(0,1)).unwrap().possible_directions;
+        let mut backward = recursing_direction(chess_board,self,Vector2::new(0,-1)).unwrap().possible_directions;
+        let mut left = recursing_direction(chess_board,self,Vector2::new(-1,0)).unwrap().possible_directions;
+        let mut right = recursing_direction(chess_board,self,Vector2::new(1,0)).unwrap().possible_directions;
         forward.append(&mut backward);
         forward.append(&mut left);
         forward.append(&mut right);
