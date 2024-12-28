@@ -38,7 +38,6 @@ async fn main() {
     loop {
         game.clone().update();
         game.render();
-
         next_frame().await
     }
 }
