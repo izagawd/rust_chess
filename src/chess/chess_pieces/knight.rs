@@ -1,3 +1,4 @@
+use std::cell::RefCell;
 use crate::chess::chess_board::ChessBoard;
 use crate::chess::chess_pieces::chess_piece::{ChessColor, ChessPiece, ChessPieceData};
 use crate::widget::WidgetData;
@@ -10,14 +11,14 @@ use macroquad::prelude::ImageFormat::Png;
 
 pub struct Knight{
     data: ChessPieceData,
-    widget_data: WidgetData,
+    widget_data: RefCell<WidgetData>,
 }
 
 impl Knight{
     pub fn new(color: ChessColor) -> Knight{
         Self{
             data: ChessPieceData::new(color),
-            widget_data: WidgetData::default()
+            widget_data: RefCell::new(WidgetData::new())
         }
     }
 }
@@ -35,7 +36,7 @@ static WHITE_KNIGHT_IMAGE: LazyLock<Texture2D> = LazyLock::new(|| {
                                      Some(Png))
 });
 impl crate::widget::Widget for Knight {
-    fn widget_data(&self) -> &WidgetData{
+    fn widget_data(&self) -> &RefCell<WidgetData> {
         &self.widget_data
     }
     fn render(&self) {

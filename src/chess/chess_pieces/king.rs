@@ -1,3 +1,4 @@
+use std::cell::RefCell;
 use crate::chess::chess_board::ChessBoard;
 use macroquad::prelude::{load_texture, Texture2D};
 use nalgebra::Vector2;
@@ -9,7 +10,7 @@ use crate::chess::chess_pieces::chess_piece::{ChessColor, ChessPiece, ChessPiece
 use crate::widget::{Widget, WidgetData};
 
 pub struct King{
-    widget_data: WidgetData,
+    widget_data: RefCell<WidgetData>,
     chess_piece_data: ChessPieceData
 }
 
@@ -22,7 +23,7 @@ impl Widget for King {
             self.render_texture(WHITE_King_IMAGE.deref())
         }
     }
-    fn widget_data(&self) -> &WidgetData {
+    fn widget_data(&self) -> &RefCell<WidgetData> {
         &self.widget_data
     }
 }
@@ -43,7 +44,7 @@ static WHITE_King_IMAGE: LazyLock<Texture2D> = LazyLock::new(|| {
 impl King{
     pub fn new(chess_color: ChessColor) -> Self{
         Self{
-            widget_data: WidgetData::default(),
+            widget_data: RefCell::new(WidgetData::new()),
             chess_piece_data: ChessPieceData::new(chess_color)
         }
     }

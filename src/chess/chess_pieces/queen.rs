@@ -1,3 +1,4 @@
+use std::cell::RefCell;
 use std::ops::Deref;
 use std::rc::Rc;
 use std::sync::LazyLock;
@@ -10,14 +11,14 @@ use crate::widget::WidgetData;
 
 pub struct Queen{
     data: ChessPieceData,
-    widget_data: WidgetData,
+    widget_data: RefCell<WidgetData>,
 }
 
 impl Queen{
     pub fn new(color: ChessColor) -> Queen{
         Self{
             data: ChessPieceData::new(color),
-            widget_data: WidgetData::default()
+            widget_data: RefCell::new(WidgetData::new())
         }
     }
 }
@@ -36,7 +37,7 @@ static WHITE_QUEEN_IMAGE: LazyLock<Texture2D> = LazyLock::new(|| {
 
 });
 impl crate::widget::Widget for Queen {
-    fn widget_data(&self) -> &WidgetData{
+    fn widget_data(&self) -> &RefCell<WidgetData> {
         &self.widget_data
     }
     fn render(&self) {

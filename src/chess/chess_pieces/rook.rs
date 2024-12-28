@@ -1,3 +1,4 @@
+use std::cell::RefCell;
 use crate::chess::chess_board::ChessBoard;
 use crate::chess::chess_pieces::chess_piece::{recursing_direction, ChessColor, ChessPiece, ChessPieceData};
 use crate::widget::{Widget, WidgetData};
@@ -10,14 +11,14 @@ use macroquad::prelude::ImageFormat::Png;
 
 pub struct Rook{
     data: ChessPieceData,
-    widget_data: WidgetData,
+    widget_data: RefCell<WidgetData>,
 }
 
 impl Rook{
     pub fn new(color: ChessColor) -> Rook{
         Self{
             data: ChessPieceData::new(color),
-            widget_data: WidgetData::default()
+            widget_data: RefCell::new(WidgetData::new())
         }
     }
 }
@@ -35,7 +36,7 @@ static WHITE_ROOK_IMAGE: LazyLock<Texture2D> = LazyLock::new(|| {
 
 });
 impl Widget for Rook {
-    fn widget_data(&self) -> &WidgetData{
+    fn widget_data(&self) -> &RefCell<WidgetData> {
         &self.widget_data
     }
     fn render(&self) {
