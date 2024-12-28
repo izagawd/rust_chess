@@ -1,10 +1,11 @@
+use std::any::Any;
 use crate::chess::chess_board::ChessBoard;
 use crate::chess::chess_pieces::chess_piece::ChessPiece;
 use crate::rectangle_widget::{ColorHandler, RectangleWidget};
 use crate::scene::remove_widget;
 use crate::widget::Alignment::{Center, Normal};
 use crate::widget::{Widget, WidgetData, WidgetVector};
-use macroquad::color::{DARKGRAY, GREEN, LIGHTGRAY};
+use macroquad::color::{DARKGRAY, GREEN, LIGHTGRAY, RED, YELLOW};
 use macroquad::input::MouseButton;
 use macroquad::prelude::{is_mouse_button_pressed, Color};
 use nalgebra::Vector2;
@@ -13,6 +14,7 @@ use std::ops::Deref;
 use std::ptr;
 use std::rc::{Rc, Weak};
 use macroquad::ui::KeyCode::V;
+use crate::chess::chess_pieces::king::King;
 use crate::rectangle_widget::ColorHandler::Value;
 
 pub struct ChessSlot{
@@ -24,6 +26,9 @@ pub struct ChessSlot{
 
 
 impl ChessSlot{
+    pub fn get_chess_board(&self) -> Rc<ChessBoard>{
+        self.board.borrow().upgrade().unwrap()
+    }
     pub fn get_slot_position(&self) -> Vector2<i32>{
         self.position
     }
@@ -60,14 +65,40 @@ impl Widget for ChessSlot{
         let cloned_weak_self =Rc::downgrade(&self);
         let function_to_use = move ||{
             let rcd_self =cloned_weak_self.upgrade().expect("this shouldnt happen");
-            if let Some(gotten)  =rcd_self.board.borrow().upgrade(){
-                if let Some(gotten_slot) = gotten.get_selected_slot(){
-                    if ptr::eq(rcd_self.deref(),gotten_slot.deref()){
-                        return GREEN
+            let board = rcd_self.board.borrow().upgrade().expect("this shouldnt happen");
+            if let Some(gotten_slot) = board.get_selected_slot(){
+
+                if ptr::eq(rcd_self.deref(),gotten_slot.deref()){
+                    return GREEN
+                }
+            }
+            if let Some(gotten_piece) = rcd_self.get_piece_at_slot(){
+                if let Ok(gotten_piece) = Rc::downcast::<King>(gotten_piece.clone()){
+                    let mut iteratorss =  board.clone().king_is_checked(gotten_piece);
+                    if iteratorss.any(|_|true){
+                        return RED;
                     }
+                }
+                let other_king = board.clone().get_slots().iter()
+                    .map(|x| x.get_piece_at_slot())
+                    .filter(|x| {
+                        if let Some(gotten) = x.as_ref()
+                            && gotten.get_chess_color() != gotten_piece.get_chess_color()
+                        &&
+                        (gotten.clone() as Rc<dyn Any>).is::<King>(){
+                            return true;
+                        }
+                        return false;
+                    })
+                    .last().flatten().unwrap();
+                if gotten_piece.possible_moves(&board).iter()
+                    .any(|x| *x == other_king.get_slot().unwrap().get_slot_position()){
+                    return YELLOW;
                 }
             }
             return rcd_self.original_color;
+
+
         };
         self.rectangle.set_color(ColorHandler::Method(Box::new(function_to_use)));
     }

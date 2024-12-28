@@ -10,7 +10,7 @@ use std::rc::Rc;
 
 
 
-
+/// enum for wheter the color is a function that returns a color, or simply a value of Color
 pub enum ColorHandler{
     Value(Color),
     Method(Box<dyn Fn() -> Color>),

@@ -1,5 +1,7 @@
 use std::cell::RefCell;
 use std::rc::Rc;
+use macroquad::input::KeyCode;
+use macroquad::prelude::is_key_down;
 use nalgebra::Vector2;
 use crate::chess::chess_board::ChessBoard;
 use crate::scene::{Scene, SceneData};
@@ -12,6 +14,7 @@ pub struct ChessGame {
 }
 
 impl ChessGame {
+
     pub fn new() -> ChessGame {
         Self{
             scene_data: SceneData::new(),

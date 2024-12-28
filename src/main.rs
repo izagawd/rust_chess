@@ -2,6 +2,7 @@
 #![feature(trait_upcasting)]
 #![feature(specialization)]
 #![feature(let_chains)]
+#![feature(gen_blocks)]
 
 use crate::game::Game;
 use crate::main_menu::MainMenu;

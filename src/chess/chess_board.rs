@@ -1,8 +1,9 @@
 use std::cell::{Cell, RefCell};
 use std::rc::{Rc, Weak};
+use std::thread::yield_now;
 use nalgebra::Vector2;
 use crate::chess::chess_pieces::bishop::Bishop;
-use crate::chess::chess_pieces::chess_piece::ChessColor;
+use crate::chess::chess_pieces::chess_piece::{ChessColor, ChessPiece};
 use crate::chess::chess_pieces::chess_piece::ChessColor::{Black, White};
 use crate::chess::chess_pieces::king::King;
 use crate::chess::chess_pieces::knight::Knight;
@@ -34,6 +35,19 @@ impl Widget for ChessBoard {
 }
 
 impl ChessBoard{
+
+    pub gen fn king_is_checked(self: Rc<Self>,king: Rc<King>) -> Rc<dyn ChessPiece>{
+        let king_loc = king.get_slot().unwrap().get_slot_position();
+        let king_col = king.get_chess_color();
+        for i in self.chess_slots.clone().into_iter().map(|x| x.get_piece_at_slot())
+            .filter(|x| x.is_some())
+            .map(|x| x.unwrap())
+            .filter(move |x| x.get_chess_color() != king_col){
+            if i.possible_moves(&self).iter().any(|x| *x == king_loc){
+                yield i
+            }
+        }
+    }
     pub fn get_slots(&self) -> &Vec<Rc<ChessSlot>>{
         &self.chess_slots
     }

@@ -29,8 +29,9 @@ impl Game{
         made
     }
     /// Changes the scene
-    pub fn change_scene(& self, scene:Rc<dyn Scene>){
+    pub fn change_scene(self: Rc<Self>, scene:Rc<dyn Scene>){
         *self.scene.borrow_mut() = scene.clone();
+        *scene.scene_data().game.borrow_mut() = Some(Rc::downgrade(&self));
         scene.init();
     }
 }
