@@ -7,6 +7,8 @@ use std::rc::{Rc, Weak};
 use crate::game::Game;
 use crate::widget::Widget;
 
+
+/// A scene can be seen as the level the game is currently in
 pub trait Scene{
     /// Gets the game the scene resides in
     fn get_game(&self) -> Rc<Game>{
@@ -29,11 +31,7 @@ pub trait Scene{
 
 
     /// Called just before render
-    fn update(self: Rc<Self>){
-
-    }
-
-
+    fn update(self: Rc<Self>);
 
     fn render(&self);
 }
@@ -66,19 +64,12 @@ impl SceneData{
     }
 }
 
-fn recursive_render(gotten: &dyn Widget){
-    gotten.render();
 
-    for i in gotten.get_children().iter() {
-        recursive_render(i.deref());
-    }
-}
 default impl<T> Scene for T{
+    fn update(self: Rc<Self>) {
+        
+    }
     fn render(&self){
-        clear_background(self.background_color());
-        for i in self.scene_data().widgets.borrow().iter()
-        {
-            recursive_render(i.deref());
-        }
+
     }
 }

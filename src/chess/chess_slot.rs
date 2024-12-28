@@ -71,11 +71,8 @@ impl Widget for ChessSlot{
     fn init(self: Rc<Self>) {
         let cloned_weak_self =Rc::downgrade(&self);
         let function_to_use = move ||{
-            let rcd_self =cloned_weak_self.upgrade().expect("this shouldnt happen");
-            let board = rcd_self.board.get().unwrap().upgrade().expect("this shouldnt happen");
-
-
-
+            let rcd_self =cloned_weak_self.upgrade().expect("object has been freed");
+            let board = rcd_self.board.get().unwrap().upgrade().expect("board has been freed");
                 if chess_game::MOVE_HELPER.get() &&  board.selected_slot.borrow().as_ref().and_then(|x| x.upgrade()).is_some()
                     && board.selected_piece_available_moves_cache.borrow().iter()
                         .any(|x| x.get_slot_position() ==rcd_self.get_slot_position()){
@@ -83,14 +80,18 @@ impl Widget for ChessSlot{
                 }
 
 
-
+            // makes tile green if the piece on the tile is selected
             if let Some(gotten_slot) = board.get_selected_slot(){
 
                 if ptr::eq(rcd_self.deref(),gotten_slot.deref()){
                     return GREEN
                 }
             }
+
+
             if let Some(gotten_piece) = rcd_self.get_piece_at_slot(){
+
+                // makes tile red if the piece on the tile is a king that is on check
                 if let Ok(gotten_piece) = Rc::downcast::<King>(gotten_piece.clone()){
                     let mut iteratorss =  board.clone().king_is_checked(gotten_piece);
                     if iteratorss.any(|_|true){
@@ -109,6 +110,9 @@ impl Widget for ChessSlot{
                         return false;
                     })
                     .last().flatten().unwrap();
+
+
+                // makes tile yellow if the piece on the tile is checking a king
                 if gotten_piece.possible_moves(&board).iter()
                     .any(|x| x.get_slot_position() == other_king.get_slot().unwrap().get_slot_position()){
                     return YELLOW;

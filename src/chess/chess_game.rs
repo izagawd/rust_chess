@@ -28,8 +28,9 @@ impl ChessGame {
         }
     }
 }
-
+/// Whether or not the move helper is on
 thread_local! {
+
     pub static  MOVE_HELPER : Cell<bool> = Cell::new(true);
 }
 impl Scene for ChessGame {
@@ -73,10 +74,10 @@ impl Scene for ChessGame {
 
         toggle_move_helper_text.set_parent(Some(toggle_move_helper_button.clone())).unwrap();
         if let Err(_) = self.restart_button.set(restart_button){
-            panic!("OnceCell error occured")
+            panic!("OnceCell error occured while trying to cache the restart button, which usually shouldn't happen")
         };
         if let Err(_) = self.move_helper_toggle_button.set(toggle_move_helper_button){
-            panic!("OnceCell error occured")
+            panic!("OnceCell error occured while trying to cache the move helper toggle button, which usually shouldn't happen")
         }
     }
     fn scene_data(&self) -> &SceneData {

@@ -18,8 +18,13 @@ use crate::widget::{Widget, WidgetData};
 
 pub struct ChessBoard{
     pub selected_piece_available_moves_cache: RefCell<Vec<Rc<ChessSlot>>>,
+
+    /// the color that is currently taking their turn
     pub turn_taker: Cell<ChessColor>,
+    /// the current slot selected to be moved
     pub selected_slot: RefCell<Option<Weak<ChessSlot>>>,
+
+    /// collection of all the chess slots on the board
     chess_slots: Vec<Rc<ChessSlot>>,
     widget_data: WidgetData
 }
@@ -56,7 +61,9 @@ impl ChessBoard{
             .filter(|x| x.is_some())
             .map(|x| x.unwrap())
     }
-    /// checks the available moves a piece has that won't get their king captured in the next turn
+    /// Checks the available moves a piece has that won't get their king captured in the next turn
+    /// # WARNING
+    /// **This is a very expensive operation, so it should NOT be called every frame**
     pub fn available_moves_for_piece(self: Rc<Self>, piece: Rc<dyn ChessPiece>) -> Vec<Rc<ChessSlot>>{
         let original_slot = piece.get_slot().unwrap();
         let piece_color = piece.get_chess_color();
@@ -223,6 +230,6 @@ impl ChessBoard{
             let created_king = add_widget(current_scene.clone(), King::new(White));
             i.clone().set_piece_at_slot(Some(created_king));
         }
-        return created;
+        created
     }
 }

@@ -28,7 +28,7 @@ impl WinnerScene{
 impl Scene for WinnerScene{
     fn init(self: Rc<Self>) {
         self.time_since_start.set(macroquad::time::get_time()).unwrap();
-        let new_text_widget = add_widget(self.clone(),
+        add_widget(self.clone(),
         TextWidget::new(WidgetVector{
             offset: Vector2::new(0.0,0.0),
             alignment: Center
@@ -37,7 +37,7 @@ impl Scene for WinnerScene{
          format!("{} won!\nTap on screen to play again!",self.winner_color.to_string())));
     }
     fn update(self: Rc<Self>) {
-
+        // adding delay before listening for input
         if is_mouse_button_pressed(MouseButton::Left) && macroquad::time::get_time() -
             self.time_since_start.get().unwrap() > 0.3{
             self.get_game().change_scene(Rc::new(ChessGame::new()))

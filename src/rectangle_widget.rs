@@ -27,9 +27,12 @@ impl From<&ColorHandler> for Color {
 }
 pub struct RectangleWidget{
     widget_data: WidgetData,
+
+    /// the color of the triangle
     color: RefCell<ColorHandler>,
 }
 
+/// Widget that simply renders a triangle
 impl RectangleWidget{
 
     pub fn set_color(& self, color: ColorHandler){
