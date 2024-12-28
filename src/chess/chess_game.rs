@@ -30,7 +30,7 @@ impl ChessGame {
 }
 
 thread_local! {
-    pub static  MoveHelper : Cell<bool> = Cell::new(true);
+    pub static  MOVE_HELPER : Cell<bool> = Cell::new(true);
 }
 impl Scene for ChessGame {
     fn update(self: Rc<Self>) {
@@ -38,7 +38,7 @@ impl Scene for ChessGame {
             self.get_game().change_scene(Rc::new(ChessGame::new()));
         }
         if self.move_helper_toggle_button.get().unwrap().is_hovered_on() && is_mouse_button_pressed(MouseButton::Left){
-            MoveHelper.set(!MoveHelper.get());
+            MOVE_HELPER.set(!MOVE_HELPER.get());
         }
     }
     fn init(self: Rc<Self>) {

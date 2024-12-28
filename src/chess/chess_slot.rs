@@ -76,7 +76,7 @@ impl Widget for ChessSlot{
 
 
 
-                if chess_game::MoveHelper.get() &&  board.selected_slot.borrow().as_ref().and_then(|x| x.upgrade()).is_some()
+                if chess_game::MOVE_HELPER.get() &&  board.selected_slot.borrow().as_ref().and_then(|x| x.upgrade()).is_some()
                     && board.selected_piece_available_moves_cache.borrow().iter()
                         .any(|x| x.get_slot_position() ==rcd_self.get_slot_position()){
                         return BLUE;
