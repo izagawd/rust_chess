@@ -36,11 +36,14 @@ impl ChessSlot{
         self.get_children().first().map(|w| w.clone().as_chess_piece())
     }
 
-    pub fn set_piece_at_slot(self: Rc<Self>, piece: Option<Rc<dyn ChessPiece>>){
+    /// sets piece at slot without removing it from the scene
+    pub fn set_piece_at_slot_ex<const remove_widget: bool>(self: Rc<Self>, piece: Option<Rc<dyn ChessPiece>>){
         let to_clone =self.get_children().clone();
         for i in to_clone{
             i.clone().set_parent(None).unwrap();
-            remove_widget(self.get_scene(),i);
+            if remove_widget{
+                crate::scene::remove_widget(self.get_scene(), i);
+            }
         }
         piece.map(|x| {
 
@@ -54,7 +57,9 @@ impl ChessSlot{
             })
         });
 
-
+    }
+    pub fn set_piece_at_slot(self: Rc<Self>, piece: Option<Rc<dyn ChessPiece>>){
+        self.set_piece_at_slot_ex::<true>(piece);
     }
 }
 
@@ -110,14 +115,15 @@ impl Widget for ChessSlot{
         let board= self.board.borrow().upgrade().unwrap();
         if self.is_hovered_on() && is_mouse_button_pressed(MouseButton::Left) &&
             let Some(piece) = self.get_piece_at_slot()
-            && piece.get_chess_color() == self.board.borrow().upgrade().unwrap().turn_taker.get(){
-            *self.board.borrow().upgrade().unwrap().selected_slot.borrow_mut()
+            && piece.get_chess_color() == board.turn_taker.get(){
+            *board.selected_slot.borrow_mut()
             =Some(Rc::downgrade(&self))
         } else if self.is_hovered_on() && is_mouse_button_pressed(MouseButton::Left) {
             let to_unwrap_slot = board.selected_slot.borrow().clone().and_then(|x| x.upgrade());
             if let Some(unwrapped_slot) = to_unwrap_slot
                 && let piece = unwrapped_slot.get_piece_at_slot().unwrap() &&
-                    piece.possible_moves(&board).iter().any(|p| p.get_slot_position() == self.position){
+
+                    board.clone().available_moves(piece.clone()).into_iter().any(|p| p.get_slot_position() == self.position){
                     self.set_piece_at_slot(Some(piece));
                     board.turn_taker.set(board.turn_taker.get().get_opposite());
                     *board.selected_slot.borrow_mut() =None;

@@ -1,3 +1,4 @@
+use std::any::Any;
 use std::cell::{Cell, RefCell};
 use std::rc::{Rc, Weak};
 use std::thread::yield_now;
@@ -36,11 +37,47 @@ impl Widget for ChessBoard {
 
 impl ChessBoard{
 
-    pub gen fn available_moves(self: Rc<Self>, piece: Rc<dyn ChessPiece>){
+    pub  fn get_pieces(&self) -> impl Iterator<Item=Rc<dyn ChessPiece>>{
+        self.chess_slots.iter().map(|x| x.get_piece_at_slot())
+            .filter(|x| x.is_some())
+            .map(|x| x.unwrap())
+    }
+    pub fn available_moves(self: Rc<Self>, piece: Rc<dyn ChessPiece>) -> Vec<Rc<ChessSlot>>{
         let original_slot = piece.get_slot().unwrap();
+        let piece_color = piece.get_chess_color();
+        let mut the_vec = Vec::new();
         for i in piece.possible_moves(&self){
+            let original_piece = i.get_piece_at_slot();
+            i.clone().set_piece_at_slot_ex::<false>(Some(piece.clone()));
+            let its_king_opt =self.get_pieces().find(move |x| x.get_chess_color() == piece_color &&
+                (x.clone() as Rc<dyn Any>).is::<King>());
 
+            'to_break:
+            {
+                if let Some(its_king) = its_king_opt
+                {
+                    for j in self.get_pieces().filter(|x| x.get_chess_color() != piece_color)
+                    {
+                        let king_capturable =  j.possible_moves(&self).into_iter()
+                            .any(|x|  {
+                                if let Some(gotten_piece) = x.get_piece_at_slot(){
+                                    if Rc::ptr_eq(&gotten_piece, &its_king){
+                                        return true;
+                                    }
+                                }
+                                return false;
+                            });
+                         if king_capturable{
+                            break 'to_break;
+                        }
+                    }
+                }
+                the_vec.push(i.clone());
+            }
+            i.set_piece_at_slot_ex::<false>(original_piece);
         }
+        original_slot.set_piece_at_slot_ex::<false>(Some(piece.clone()));
+        return  the_vec;
     }
     pub gen fn king_is_checked(self: Rc<Self>,king: Rc<King>) -> Rc<dyn ChessPiece>{
         let king_loc = king.get_slot().unwrap().get_slot_position();
