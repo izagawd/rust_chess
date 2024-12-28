@@ -3,7 +3,7 @@ use crate::chess::chess_board::ChessBoard;
 use crate::chess::chess_pieces::chess_piece::ChessPiece;
 use crate::rectangle_widget::{ColorHandler, RectangleWidget};
 use crate::scene::{remove_widget, Scene};
-use crate::widget::Alignment::{Center, Normal};
+use crate::widget::Alignment::{Center, TopLeft};
 use crate::widget::{Widget, WidgetData, WidgetVector};
 use macroquad::color::{BLUE, DARKGRAY, GREEN, LIGHTGRAY, PURPLE, RED, YELLOW};
 use macroquad::input::MouseButton;
@@ -14,6 +14,7 @@ use std::ops::Deref;
 use std::ptr;
 use std::rc::{Rc, Weak};
 use macroquad::ui::KeyCode::V;
+use crate::chess::chess_game;
 use crate::chess::chess_pieces::king::King;
 use crate::rectangle_widget::ColorHandler::Value;
 use crate::winner_scene::WinnerScene;
@@ -73,16 +74,15 @@ impl Widget for ChessSlot{
             let rcd_self =cloned_weak_self.upgrade().expect("this shouldnt happen");
             let board = rcd_self.board.borrow().upgrade().expect("this shouldnt happen");
 
-            {
-                if let Some(selected_slot)  = board.selected_slot.borrow().as_ref().and_then(|x| x.upgrade()){
-                    if let Some(selected_piece) = selected_slot.get_piece_at_slot(){
-                        if board.selected_piece_available_moves_cache.borrow().iter()
-                            .any(|x| x.get_slot_position() ==rcd_self.get_slot_position()){
-                            return BLUE;
-                        }
-                    }
+
+
+                if chess_game::MoveHelper.get() &&  board.selected_slot.borrow().as_ref().and_then(|x| x.upgrade()).is_some()
+                    && board.selected_piece_available_moves_cache.borrow().iter()
+                        .any(|x| x.get_slot_position() ==rcd_self.get_slot_position()){
+                        return BLUE;
                 }
-            }
+
+
 
             if let Some(gotten_slot) = board.get_selected_slot(){
 
@@ -168,7 +168,8 @@ impl ChessSlot{
                      (position.x   * SLOT_SIZE) as f32 ,
                 (position.y * SLOT_SIZE) as f32
             ),
-            alignment:  Normal}, Vector2::new(SLOT_SIZE as f32, SLOT_SIZE as f32),
+            alignment: TopLeft
+            }, Vector2::new(SLOT_SIZE as f32, SLOT_SIZE as f32),
                                             Value(color))
         }
     }

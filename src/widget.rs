@@ -12,7 +12,8 @@ use std::rc::{Rc, Weak};
 
 #[derive(Clone,Copy,Eq,PartialEq)]
 pub enum Alignment {
-    Normal,
+    TopLeft,
+    TopRight,
     Center,
     TopCenter,
 
@@ -24,7 +25,7 @@ pub struct WidgetVector{
 }
 impl Default for WidgetVector{
     fn default()->Self{
-        Self{offset:Vector2::zeros(), alignment: Alignment::Normal}
+        Self{offset:Vector2::zeros(), alignment: Alignment::TopLeft }
     }
 }
 #[derive(Default)]
@@ -110,7 +111,9 @@ default impl<T: 'static> Widget for T {
         self.widget_data().widget_data_inner.borrow_mut().size= value;
     }
     fn global_position(&self) -> Vector2<f32>{
+        /// can either be screen or parent position
         let mut position_to_work_with = Vector2::new(0.0, 0.0);
+        /// can either be screen or parent size
         let size_to_work_with : Vector2<f32>;
 
         let za_parent = self.get_parent();
@@ -123,7 +126,7 @@ default impl<T: 'static> Widget for T {
         let widget_pos = self.widget_data().widget_data_inner.borrow().widget_position.clone();
 
         match widget_pos.alignment {
-            Alignment::Normal => {
+            Alignment::TopLeft => {
                 return position_to_work_with + widget_pos.offset;
             }
             Alignment::Center => {
@@ -139,7 +142,13 @@ default impl<T: 'static> Widget for T {
                                         widget_pos.offset.x + position_to_work_with.x
                                     ,position_to_work_with.y + widget_pos.offset.y + my_size_halved.y
                 + position_to_work_with.y);
+            }
+            Alignment::TopRight => {
+                let my_size = self.size();
 
+                return Vector2::new((size_to_work_with.x - my_size.x) +
+                                        widget_pos.offset.x + position_to_work_with.x
+                                    ,position_to_work_with.y + widget_pos.offset.y);
             }
         }
     }
