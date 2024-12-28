@@ -196,7 +196,6 @@ default impl<T: 'static> Widget for T {
                     .position(|x| Rc::ptr_eq(x,&as_widget));
                 if let Some(gotten_index)= gotten {
 
-                    println!("{}","yo");
                     true_one.widget_data().borrow_mut().children.remove(
                         gotten_index
                     );
