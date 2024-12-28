@@ -31,7 +31,6 @@ mod chess{
     pub mod chess_slot;
     pub mod chess_board;
 }
-
 #[macroquad::main("Legendary Chess")]
 async fn main() {
     let game = Game::new(MainMenu::new());
