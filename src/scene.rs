@@ -29,7 +29,7 @@ pub trait Scene{
     fn render(&self);
 }
 
-pub fn add_widget<T: Widget + 'static>(scene: Rc<dyn Scene>, widget: T) -> Rc<T>{
+pub fn add_widget<T: Widget>(scene: Rc<dyn Scene>, widget: T) -> Rc<T>{
 
     let created = Rc::new(widget);
     scene.scene_data().widgets.borrow_mut().push(created.clone());

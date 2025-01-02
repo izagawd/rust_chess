@@ -86,7 +86,7 @@ pub trait Widget : Any{
 
     fn get_parent(&self)->Option<Rc<dyn Widget>>;
 }
-default impl<T: 'static> Widget for T {
+default impl<T> Widget for T {
     fn init(self: Rc<Self>) {}
     fn get_scene(&self) -> Rc<dyn Scene> {
         self.widget_data().widget_data_inner.borrow().scene.as_ref().unwrap().upgrade().unwrap()
