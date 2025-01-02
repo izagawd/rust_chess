@@ -11,19 +11,12 @@ use crate::widget::Widget;
 /// A scene can be seen as the level the game is currently in
 pub trait Scene{
     /// Gets the game the scene resides in
-    fn get_game(&self) -> Rc<Game>{
-        self.scene_data().game.get().as_ref().and_then(|x| x.upgrade())
-            .unwrap()
-    }
+    fn get_game(&self) -> Rc<Game>;
 
     /// Gets the widgets contained in the scene
-    fn get_widgets(&self) -> Ref<Vec<Rc<dyn Widget>>>{
-        self.scene_data().widgets. borrow()
-    }
-    fn background_color(&self) -> macroquad::color::Color{
-        RED
-    }
-    fn init(self: Rc<Self>){}
+    fn get_widgets(&self) -> Ref<Vec<Rc<dyn Widget>>>;
+    fn background_color(&self) -> macroquad::color::Color;
+    fn init(self: Rc<Self>);
 
 
     /// The data all scenes must have
@@ -66,6 +59,17 @@ impl SceneData{
 
 
 default impl<T> Scene for T{
+    fn get_game(&self) -> Rc<Game>{
+        self.scene_data().game.get().as_ref().and_then(|x| x.upgrade())
+            .unwrap()
+    }
+    fn background_color(&self) -> macroquad::color::Color{
+        RED
+    }
+    fn get_widgets(&self) -> Ref<Vec<Rc<dyn Widget>>> {
+        self.scene_data().widgets. borrow()
+    }
+    fn init(self: Rc<Self>){}
     fn update(self: Rc<Self>) {
         
     }

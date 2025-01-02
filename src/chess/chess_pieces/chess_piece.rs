@@ -75,32 +75,39 @@ pub fn recursing_direction(board: &Rc<ChessBoard>,  piece: &(impl ChessPiece + ?
 }
 pub trait ChessPiece : Widget {
     /// Gets the current slot the chess piece is on
+    fn get_slot(&self) -> Option<Rc<ChessSlot>>;
+    /// Returns either black or white depending on the chess piece
+    fn get_chess_color(&self) -> ChessColor;
+    ///common data every chess piece should have
+    fn chess_piece_data(&self) -> &ChessPieceData;
+
+
+    /// code to easily render a chess piece with less stress
+    fn render_texture(&self,texture: &Texture2D);
+
+    /// Returns the possible moves this piece can do based on the state of the game
+    fn possible_moves(&self, chess_board: &Rc<ChessBoard>) -> Vec<Rc<ChessSlot>>;
+}
+
+default impl<T> ChessPiece for T{
     fn get_slot(&self) -> Option<Rc<ChessSlot>>{
         self.get_parent().and_then(|p| match Rc::downcast::<ChessSlot>(p)  {
             Ok(gotten) => { Some(gotten)},
             Err(_) => {None}
         } )
     }
-    /// Returns either black or white depending on the chess piece
+
     fn get_chess_color(&self) -> ChessColor{
         self.chess_piece_data().chess_color
     }
-    ///common data every chess piece should have
-    fn chess_piece_data(&self) -> &ChessPieceData;
 
-
-    /// code to easily render a chess piece with less stress
     fn render_texture(&self,texture: &Texture2D){
 
         draw_texture_ex(texture, self.global_position().x,
-                     self.global_position().y,
-                     WHITE,DrawTextureParams{
+                        self.global_position().y,
+                        WHITE,DrawTextureParams{
                 dest_size: Some(Vec2::new(self.size().x,self.size().y)),
                 ..Default::default()
             })
     }
-
-
-    /// Returns the possible moves this piece can do based on the state of the game
-    fn possible_moves(&self, chess_board: &Rc<ChessBoard>) -> Vec<Rc<ChessSlot>>;
 }
