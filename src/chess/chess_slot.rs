@@ -70,12 +70,13 @@ impl ChessSlot{
 impl Widget for ChessSlot{
     fn init(self: Rc<Self>) {
         let cloned_weak_self =Rc::downgrade(&self);
-        let function_to_use = move ||{
+        let event = move ||{
             let rcd_self =cloned_weak_self.upgrade().expect("object has been freed");
             let board = rcd_self.board.get().unwrap().upgrade().expect("board has been freed");
                 if chess_game::MOVE_HELPER.get() &&  board.selected_slot.borrow().as_ref().and_then(|x| x.upgrade()).is_some()
                     && board.selected_piece_available_moves_cache.borrow().iter()
                         .any(|x| x.get_slot_position() ==rcd_self.get_slot_position()){
+                        // Returns blue tile to show which positions a piece can go to
                         return BLUE;
                 }
 
@@ -101,7 +102,7 @@ impl Widget for ChessSlot{
                 let other_king = board.clone().get_slots().iter()
                     .map(|x| x.get_piece_at_slot())
                     .filter(|x| {
-                        if let Some(gotten) = x.as_ref()
+                        if let Some(gotten) = x
                             && gotten.get_chess_color() != gotten_piece.get_chess_color()
                         &&
                         (gotten.clone() as Rc<dyn Any>).is::<King>(){
@@ -122,7 +123,7 @@ impl Widget for ChessSlot{
 
 
         };
-        self.rectangle.set_color(ColorHandler::Method(Box::new(function_to_use)));
+        self.rectangle.set_color(ColorHandler::Method(Box::new(event)));
     }
     fn widget_data(&self) -> &WidgetData {
         self.rectangle.widget_data()
@@ -132,18 +133,21 @@ impl Widget for ChessSlot{
         let board= self.board.get().unwrap().upgrade().unwrap();
         if self.is_hovered_on() && is_mouse_button_pressed(MouseButton::Left) &&
             let Some(piece) = self.get_piece_at_slot()
-            && piece.get_chess_color() == board.turn_taker.get(){
-            *board.selected_slot.borrow_mut()
-            =Some(Rc::downgrade(&self));
+            && piece.get_chess_color() == board.turn_taker.get()
+        {
+            *board.selected_slot.borrow_mut() =Some(Rc::downgrade(&self));
             *board.selected_piece_available_moves_cache.borrow_mut() = board.clone().available_moves_for_piece(piece.clone());
-        } else if self.is_hovered_on() && is_mouse_button_pressed(MouseButton::Left) {
+        } else if self.is_hovered_on()
+            && is_mouse_button_pressed(MouseButton::Left)
+        {
             let to_unwrap_slot = board.selected_slot.borrow().clone().and_then(|x| x.upgrade());
             if let Some(unwrapped_slot) = to_unwrap_slot
                 && let piece = unwrapped_slot.get_piece_at_slot().unwrap() &&
-                    board.clone().available_moves_for_piece(piece.clone()).into_iter().any(|p| p.get_slot_position() == self.position){
-                    self.clone().set_piece_at_slot(Some(piece));
-                    board.turn_taker.set(board.turn_taker.get().get_opposite());
-                    *board.selected_slot.borrow_mut() =None;
+                    board.clone().available_moves_for_piece(piece.clone()).into_iter().any(|p| p.get_slot_position() == self.position)
+            {
+                self.clone().set_piece_at_slot(Some(piece));
+                board.turn_taker.set(board.turn_taker.get().get_opposite());
+                *board.selected_slot.borrow_mut() =None;
                 let is_other_team_checkmated =  board.clone().king_is_checkmated(board.turn_taker.get());
                 if is_other_team_checkmated {
                     self.get_scene().get_game().change_scene(Rc::new(WinnerScene::new(board.turn_taker.get().get_opposite())));

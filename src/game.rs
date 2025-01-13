@@ -46,7 +46,7 @@ impl Game{
         self.scene.borrow().render();
     }
     pub fn new(scene: Rc<dyn Scene>) -> Rc<Self>{
-       let made =Rc::new(Self{scene:RefCell::new(scene.clone())});
+       let made =Rc::new( Self { scene: RefCell::new(scene.clone())} );
         made.scene.borrow().scene_data().game.set(Rc::downgrade(&made)).unwrap();
         scene.init();
         made
