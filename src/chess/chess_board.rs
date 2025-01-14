@@ -101,11 +101,11 @@ impl ChessBoard{
     }
     pub gen fn king_is_checked(self: Rc<Self>,king: Rc<King>) -> Rc<dyn ChessPiece>{
         let king_loc = king.get_slot().unwrap().get_slot_position();
-        let king_col = king.get_chess_color();
+        let king_color = king.get_chess_color();
         for i in self.chess_slots.clone().into_iter().map(|x| x.get_piece_at_slot())
             .filter(|x| x.is_some())
             .map(|x| x.unwrap())
-            .filter(move |x| x.get_chess_color() != king_col){
+            .filter(move |x| x.get_chess_color() != king_color){
             if i.possible_moves(&self).iter().any(|x|x.get_slot_position() == king_loc){
                 yield i
             }
@@ -114,7 +114,7 @@ impl ChessBoard{
     pub fn get_slots(&self) -> &Vec<Rc<ChessSlot>>{
         &self.chess_slots
     }
-    /// gets the slot that is currently tapped on
+
     pub fn get_selected_slot(&self) -> Option<Rc<ChessSlot>> {
         self.selected_slot.borrow().clone().and_then(|s| s.upgrade())
     }
