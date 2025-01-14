@@ -62,8 +62,6 @@ impl ChessBoard{
             .map(|x| x.unwrap())
     }
     /// Checks the available moves a piece has that won't get their king captured in the next turn
-    /// # WARNING
-    /// **This is a very expensive operation, so it should NOT be called every frame**
     pub fn available_moves_for_piece(self: Rc<Self>, piece: Rc<dyn ChessPiece>) -> Vec<Rc<ChessSlot>>{
         let original_slot = piece.get_slot().unwrap();
         let piece_color = piece.get_chess_color();
