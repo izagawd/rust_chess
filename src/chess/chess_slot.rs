@@ -2,7 +2,7 @@ use std::any::Any;
 use crate::chess::chess_board::ChessBoard;
 use crate::chess::chess_pieces::chess_piece::ChessPiece;
 use crate::rectangle_widget::{ColorHandler, RectangleWidget};
-use crate::scene::{remove_widget, Scene};
+
 use crate::widget::Alignment::{Center, TopLeft};
 use crate::widget::{Widget, WidgetData, WidgetVector};
 use macroquad::color::{BLUE, DARKGRAY, GREEN, LIGHTGRAY, PURPLE, RED, YELLOW};
@@ -16,6 +16,8 @@ use std::rc::{Rc, Weak};
 use macroquad::ui::KeyCode::V;
 use crate::chess::chess_game;
 use crate::chess::chess_pieces::king::King;
+use crate::level_utilities::scene;
+use crate::level_utilities::scene::Scene;
 use crate::rectangle_widget::ColorHandler::Value;
 use crate::winner_scene::WinnerScene;
 
@@ -44,7 +46,7 @@ impl ChessSlot{
         for i in to_clone{
             i.clone().set_parent(None).unwrap();
             if remove_widget{
-                crate::scene::remove_widget(self.get_scene(), i);
+                scene::remove_widget(self.get_scene(), i);
             }
         }
         piece.map(|x| {

@@ -6,8 +6,9 @@ use macroquad::input::{is_key_pressed, is_mouse_button_pressed, KeyCode, MouseBu
 use macroquad::prelude::is_key_down;
 use nalgebra::Vector2;
 use crate::chess::chess_board::ChessBoard;
+use crate::level_utilities::scene::{add_widget, Scene, SceneData};
 use crate::rectangle_widget::{ColorHandler, RectangleWidget};
-use crate::scene::{add_widget, Scene, SceneData};
+
 use crate::text_widget::TextWidget;
 use crate::widget::{Widget, WidgetVector};
 use crate::widget::Alignment::{Center, TopLeft, TopCenter, TopRight};

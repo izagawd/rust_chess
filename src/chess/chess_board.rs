@@ -13,7 +13,8 @@ use crate::chess::chess_pieces::queen::Queen;
 use crate::chess::chess_pieces::rook::Rook;
 use crate::chess::chess_slot;
 use crate::chess::chess_slot::ChessSlot;
-use crate::scene::{add_widget, Scene};
+use crate::level_utilities::scene::{add_widget, Scene};
+
 use crate::widget::{Widget, WidgetData};
 
 pub struct ChessBoard{

@@ -4,7 +4,7 @@ use std::cell::{OnceCell, Ref, RefCell};
 use std::ops::Deref;
 use std::rc::{Rc, Weak};
 
-use crate::game::Game;
+use crate::level_utilities::game::Game;
 use crate::widget::Widget;
 
 
@@ -47,7 +47,7 @@ pub fn remove_widget(scene:Rc<dyn Scene>, widget: Rc<dyn Widget>) {
 #[derive(Default)]
 pub struct SceneData{
     widgets: RefCell<Vec<Rc<dyn Widget>>>,
-    pub(crate) game: OnceCell<Weak<Game>>
+    pub(in super) game: OnceCell<Weak<Game>>
 }
 
 impl SceneData{

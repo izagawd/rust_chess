@@ -2,7 +2,7 @@ use std::cell::RefCell;
 use std::ops::Deref;
 use std::rc::Rc;
 use macroquad::prelude::clear_background;
-use crate::scene::Scene;
+use crate::level_utilities::scene::Scene;
 use crate::widget::Widget;
 
 /// The main source of this game. It has a scene that can be changed anytime

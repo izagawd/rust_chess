@@ -4,14 +4,19 @@
 #![feature(let_chains)]
 #![feature(gen_blocks)]
 
-use crate::game::Game;
 use crate::main_menu::MainMenu;
 use macroquad::prelude::*;
-use crate::widget::WidgetData;
+use crate::level_utilities::game::Game;
+
 
 mod widget;
-mod game;
-mod scene;
+
+
+mod level_utilities{
+    pub mod game;
+    pub mod scene;
+}
+
 mod main_menu;
 mod rectangle_widget;
 mod text_widget;

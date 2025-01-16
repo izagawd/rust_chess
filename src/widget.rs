@@ -2,13 +2,13 @@ use std::any::Any;
 use std::cell::{Ref, RefCell};
 
 use crate::chess::chess_pieces::chess_piece::ChessPiece;
-use crate::scene::Scene;
+
 use macroquad::input::mouse_position;
 use macroquad::prelude::screen_width;
 use macroquad::window::screen_height;
 use nalgebra::Vector2;
 use std::rc::{Rc, Weak};
-
+use crate::level_utilities::scene::Scene;
 
 #[derive(Clone,Copy,Eq,PartialEq)]
 pub enum Alignment {

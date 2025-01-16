@@ -1,6 +1,6 @@
 use crate::chess::chess_game::ChessGame;
 use crate::rectangle_widget::{ColorHandler, RectangleWidget};
-use crate::scene::{add_widget, Scene, SceneData};
+
 use crate::text_widget::TextWidget;
 use crate::widget::Alignment::Center;
 use crate::widget::{Widget, WidgetVector};
@@ -9,6 +9,7 @@ use macroquad::input::{is_mouse_button_down, MouseButton};
 use nalgebra::Vector2;
 use std::cell::{OnceCell, RefCell};
 use std::rc::{Rc, Weak};
+use crate::level_utilities::scene::{add_widget, Scene, SceneData};
 
 /**
 * scene for the main menu
