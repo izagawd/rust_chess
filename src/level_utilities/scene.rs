@@ -1,7 +1,5 @@
 use macroquad::color::RED;
-use macroquad::prelude::clear_background;
 use std::cell::{OnceCell, Ref, RefCell};
-use std::ops::Deref;
 use std::rc::{Rc, Weak};
 
 use crate::level_utilities::game::Game;
@@ -37,7 +35,7 @@ pub fn add_widget<T: Widget>(scene: Rc<dyn Scene>, widget: T) -> Rc<T>{
     created.clone().init();
     created
 }
-pub fn remove_widget(scene:Rc<dyn Scene>, widget: Rc<dyn Widget>) {
+pub fn remove_widget(scene: Rc<dyn Scene>, widget: Rc<dyn Widget>) {
     widget.clone().set_parent(None).unwrap();
     let pos = scene.scene_data().widgets.borrow().iter().position(|x| Rc::ptr_eq(x, &widget)).unwrap();
     scene.scene_data().widgets.borrow_mut().remove(pos);

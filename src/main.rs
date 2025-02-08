@@ -1,5 +1,5 @@
 
-#![feature(trait_upcasting)]
+
 #![feature(specialization)]
 #![feature(let_chains)]
 #![feature(gen_blocks)]
